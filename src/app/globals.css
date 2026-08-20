@@ -1,26 +1,210 @@
 @import "tailwindcss";
 
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
+  --black: #000000;
+  --prussian-blue: #14213d;
+  --orange: #fca311;
+  --alabaster-grey: #e5e5e5;
+  --white: #ffffff;
+
+  --background: var(--black);
+  --foreground: var(--white);
 }
 
 @theme inline {
+  --color-black: var(--black);
+  --color-prussian-blue: var(--prussian-blue);
+  --color-orange: var(--orange);
+  --color-alabaster-grey: var(--alabaster-grey);
+  --color-white: var(--white);
   --color-background: var(--background);
   --color-foreground: var(--foreground);
+
   --font-sans: var(--font-geist-sans);
   --font-mono: var(--font-geist-mono);
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
+* {
+  box-sizing: border-box;
+}
+
+html {
+  scroll-behavior: smooth;
+  background: var(--black);
 }
 
 body {
+  margin: 0;
   background: var(--background);
   color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  font-family: var(--font-sans), Arial, Helvetica, sans-serif;
+}
+
+::selection {
+  background: var(--orange);
+  color: var(--black);
+}
+
+:focus-visible {
+  outline: 2px solid var(--orange);
+  outline-offset: 4px;
+}
+
+.surface-grid {
+  background-image:
+    linear-gradient(to right, color-mix(in srgb, var(--alabaster-grey) 6%, transparent) 1px, transparent 1px),
+    linear-gradient(to bottom, color-mix(in srgb, var(--alabaster-grey) 6%, transparent) 1px, transparent 1px);
+  background-size: 48px 48px;
+}
+
+.fine-grid {
+  background-image:
+    linear-gradient(to right, color-mix(in srgb, var(--alabaster-grey) 8%, transparent) 1px, transparent 1px),
+    linear-gradient(to bottom, color-mix(in srgb, var(--alabaster-grey) 8%, transparent) 1px, transparent 1px);
+  background-size: 24px 24px;
+}
+
+.contact-dialog {
+  margin: auto;
+}
+
+.contact-dialog::backdrop {
+  background: color-mix(in srgb, var(--black) 82%, transparent);
+  backdrop-filter: blur(10px);
+}
+
+.contact-dialog[open] {
+  animation: contact-dialog-in 220ms ease-out;
+}
+
+.text-outline {
+  color: transparent;
+  -webkit-text-stroke: 1px var(--alabaster-grey);
+}
+
+.marquee-track {
+  width: max-content;
+  animation: marquee 22s linear infinite;
+}
+
+.tech-roll-track {
+  animation: tech-roll 32s linear infinite;
+  will-change: transform;
+}
+
+.tech-logo-item:nth-child(4n + 1) .tech-logo-mark {
+  opacity: 0.62;
+}
+
+.tech-logo-item:nth-child(4n + 3) .tech-logo-mark {
+  opacity: 0.82;
+}
+
+.tech-logo-item:hover .tech-logo-mark {
+  opacity: 1;
+}
+
+@keyframes marquee {
+  to {
+    transform: translateX(-50%);
+  }
+}
+
+@keyframes tech-roll {
+  to {
+    transform: translateX(-50%);
+  }
+}
+
+@keyframes contact-dialog-in {
+  from {
+    opacity: 0;
+    transform: translateY(18px) scale(0.985);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+
+  .marquee-track {
+    animation: none;
+  }
+
+  .tech-roll-track {
+    animation: none;
+    transform: none;
+  }
+
+  .tech-logo-mark,
+  .tech-logo-item span {
+    transition-duration: 0.01ms !important;
+  }
+
+  .contact-dialog[open] {
+    animation: none;
+  }
+}
+
+::-webkit-scrollbar {
+  width: 10px;
+}
+
+::-webkit-scrollbar-track {
+  background: var(--black);
+}
+
+::-webkit-scrollbar-thumb {
+  border: 3px solid var(--black);
+  border-radius: 999px;
+  background: var(--prussian-blue);
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: var(--orange);
+}
+
+@layer components {
+  .admin-secondary-button {
+    border: 1px solid color-mix(in srgb, var(--alabaster-grey) 20%, transparent);
+    padding: 0.65rem 0.9rem;
+    color: var(--alabaster-grey);
+    font-family: var(--font-mono), monospace;
+    font-size: 0.625rem;
+    font-weight: 700;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    transition: border-color 180ms ease, color 180ms ease;
+  }
+
+  .admin-secondary-button:hover {
+    border-color: var(--orange);
+    color: var(--orange);
+  }
+
+  .admin-icon-button {
+    display: grid;
+    width: 2.25rem;
+    height: 2.25rem;
+    place-items: center;
+    border: 1px solid color-mix(in srgb, var(--alabaster-grey) 15%, transparent);
+    color: var(--alabaster-grey);
+    transition: border-color 180ms ease, color 180ms ease, opacity 180ms ease;
+  }
+
+  .admin-icon-button:hover:not(:disabled) {
+    border-color: var(--orange);
+    color: var(--orange);
+  }
+
+  .admin-icon-button:disabled {
+    cursor: not-allowed;
+    opacity: 0.25;
+  }
 }
