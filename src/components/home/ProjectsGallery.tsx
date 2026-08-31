@@ -82,7 +82,7 @@ export async function ProjectsGallery({
       )}
 
       {projects && projects.length > 0 ? (
-        <div className="mt-14 space-y-7 sm:mt-20 sm:space-y-10">
+        <div className="mt-14 grid grid-cols-1 items-stretch gap-5 sm:mt-20 sm:grid-cols-2 xl:grid-cols-3">
           {projects.map((project, index) => (
             <ProjectCard key={project.id} project={project} index={index} />
           ))}
