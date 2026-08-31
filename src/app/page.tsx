@@ -1,3 +1,4 @@
+import { redirect } from "next/navigation";
 import { Navbar } from "@/components/layout/Navbar";
 import { Footer } from "@/components/layout/Footer";
 import { Hero } from "@/components/home/Hero";
@@ -9,6 +10,10 @@ import { themeStyle } from "@/lib/theme-style";
 
 export default async function Home() {
   const { settings } = await getSiteSettings();
+
+  if (settings.maintenance_mode) {
+    redirect("/maintenance");
+  }
 
   return (
     <div

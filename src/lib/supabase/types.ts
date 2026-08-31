@@ -107,7 +107,16 @@ export type ContactContent = {
   image_alt: string;
 };
 
+export type MaintenanceContent = {
+  eyebrow: string;
+  heading: string;
+  message: string;
+  status_label: string;
+};
+
 export type SiteSettingsContent = {
+  maintenance_mode: boolean;
+  maintenance_content: MaintenanceContent;
   theme: ThemeSettings;
   home_content: HomeContent;
   projects_content: ProjectsContent;
@@ -158,7 +167,7 @@ export type Database = {
       };
       site_settings: {
         Row: SiteSettings;
-        Insert: SiteSettingsContent & {
+        Insert: Partial<SiteSettingsContent> & {
           id?: string;
           owner_id?: string;
           updated_at?: string;

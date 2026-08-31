@@ -13,12 +13,14 @@ import { DEFAULT_THEME } from "@/lib/site-settings";
 import type {
   ContactContent,
   HomeContent,
+  MaintenanceContent,
   ProjectsContent,
   SiteSettingsContent,
   ThemeSettings,
 } from "@/lib/supabase/types";
 
 export type SiteEditorModule =
+  | "maintenance"
   | "theme"
   | "home"
   | "projects"
@@ -26,6 +28,7 @@ export type SiteEditorModule =
   | "contact";
 
 const modules: Array<{ id: SiteEditorModule; label: string; number: string }> = [
+  { id: "maintenance", label: "Maintenance", number: "M" },
   { id: "theme", label: "Global theme", number: "00" },
   { id: "home", label: "Home", number: "01" },
   { id: "projects", label: "Projects", number: "02" },
@@ -58,6 +61,13 @@ export default function SiteEditorForm({
     setSettings((current) => ({
       ...current,
       theme: { ...current.theme, ...patch },
+    }));
+  }
+
+  function updateMaintenance(patch: Partial<MaintenanceContent>) {
+    setSettings((current) => ({
+      ...current,
+      maintenance_content: { ...current.maintenance_content, ...patch },
     }));
   }
 
@@ -141,6 +151,72 @@ export default function SiteEditorForm({
           </div>
         )}
 
+        {active === "maintenance" && (
+          <EditorModule
+            number="M"
+            title="Maintenance mode"
+            description="Hide the complete viewer portfolio behind a focused maintenance screen while keeping the admin workspace available."
+          >
+            <label className="flex cursor-pointer items-center justify-between gap-5 border border-alabaster-grey/15 bg-black p-5">
+              <span>
+                <span className="block text-base font-bold text-white">
+                  Hide the viewer website
+                </span>
+                <span className="mt-1 block text-sm leading-6 text-alabaster-grey/55">
+                  Publish this setting to redirect Home and all project pages to maintenance.
+                </span>
+              </span>
+              <input
+                type="checkbox"
+                role="switch"
+                checked={settings.maintenance_mode}
+                onChange={(event) =>
+                  setSettings((current) => ({
+                    ...current,
+                    maintenance_mode: event.target.checked,
+                  }))
+                }
+                className="size-5 shrink-0 accent-orange"
+              />
+            </label>
+
+            <div className="grid gap-5 sm:grid-cols-2">
+              <TextField
+                label="Small label"
+                value={settings.maintenance_content.eyebrow}
+                onChange={(eyebrow) => updateMaintenance({ eyebrow })}
+              />
+              <TextField
+                label="Status label"
+                value={settings.maintenance_content.status_label}
+                onChange={(status_label) => updateMaintenance({ status_label })}
+              />
+            </div>
+            <TextAreaField
+              label="Maintenance heading"
+              value={settings.maintenance_content.heading}
+              onChange={(heading) => updateMaintenance({ heading })}
+            />
+            <TextAreaField
+              label="Visitor message"
+              value={settings.maintenance_content.message}
+              onChange={(message) => updateMaintenance({ message })}
+            />
+
+            <div className="fine-grid border border-orange/30 bg-prussian-blue/45 p-6">
+              <p className="font-mono text-[9px] uppercase tracking-[0.2em] text-orange">
+                {settings.maintenance_content.eyebrow}
+              </p>
+              <p className="mt-4 max-w-2xl text-3xl font-black tracking-tighter text-white">
+                {settings.maintenance_content.heading}
+              </p>
+              <p className="mt-4 max-w-xl text-sm leading-6 text-alabaster-grey/65">
+                {settings.maintenance_content.message}
+              </p>
+            </div>
+          </EditorModule>
+        )}
+
         {active === "theme" && (
           <EditorModule
             number="00"
@@ -155,7 +231,7 @@ export default function SiteEditorForm({
                 <p className="font-mono text-[9px] uppercase tracking-[0.2em] text-[var(--orange)]">
                   Live palette preview
                 </p>
-                <p className="mt-3 max-w-md text-3xl font-black tracking-[-0.05em] text-[var(--white)]">
+                <p className="mt-3 max-w-md text-3xl font-black tracking-tighter text-[var(--white)]">
                   Your portfolio, your visual system<span className="text-[var(--orange)]">.</span>
                 </p>
                 <p className="mt-3 text-sm text-[var(--alabaster-grey)]/70">

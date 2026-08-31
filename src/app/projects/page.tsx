@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { redirect } from "next/navigation";
 import { Navbar } from "@/components/layout/Navbar";
 import { Footer } from "@/components/layout/Footer";
 import { ProjectsGallery } from "@/components/home/ProjectsGallery";
@@ -12,6 +13,10 @@ export const metadata: Metadata = {
 
 export default async function ProjectsPage() {
   const { settings } = await getSiteSettings();
+
+  if (settings.maintenance_mode) {
+    redirect("/maintenance");
+  }
 
   return (
     <div

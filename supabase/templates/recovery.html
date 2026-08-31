@@ -1,0 +1,73 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Reset your SHAI admin password</title>
+  </head>
+  <body style="margin:0;background:#e5e5e5;padding:32px 12px;font-family:Arial,Helvetica,sans-serif;color:#ffffff;">
+    <table role="presentation" width="100%" cellspacing="0" cellpadding="0" border="0">
+      <tr>
+        <td align="center">
+          <table role="presentation" width="100%" cellspacing="0" cellpadding="0" border="0" style="max-width:620px;background:#000000;border:1px solid #14213d;">
+            <tr>
+              <td style="padding:24px 28px;border-bottom:1px solid #27324a;">
+                <table role="presentation" width="100%" cellspacing="0" cellpadding="0" border="0">
+                  <tr>
+                    <td>
+                      <span style="display:inline-block;background:#fca311;color:#000000;padding:12px 10px;font-size:12px;font-weight:800;letter-spacing:1px;">SH</span>
+                      <span style="padding-left:10px;font-size:14px;font-weight:800;letter-spacing:0.5px;">SHAI / ADMIN</span>
+                    </td>
+                    <td align="right" style="font-family:monospace;font-size:9px;letter-spacing:1.5px;color:#fca311;text-transform:uppercase;">
+                      Account recovery
+                    </td>
+                  </tr>
+                </table>
+              </td>
+            </tr>
+            <tr>
+              <td style="padding:44px 28px 18px;">
+                <p style="margin:0 0 16px;font-family:monospace;font-size:10px;letter-spacing:2px;color:#fca311;text-transform:uppercase;">
+                  Secure request / 01
+                </p>
+                <h1 style="margin:0;font-size:42px;line-height:0.95;letter-spacing:-2px;color:#ffffff;">
+                  Reset your<br /><span style="color:#fca311;">admin password.</span>
+                </h1>
+              </td>
+            </tr>
+            <tr>
+              <td style="padding:18px 28px 8px;">
+                <p style="max-width:500px;margin:0;font-size:15px;line-height:1.7;color:#bfc3ca;">
+                  A password reset was requested for <strong style="color:#ffffff;">{{ .Email }}</strong>. Use the secure button below to choose a new password for your portfolio workspace.
+                </p>
+              </td>
+            </tr>
+            <tr>
+              <td style="padding:28px;">
+                <a href="{{ .RedirectTo }}&amp;token_hash={{ .TokenHash }}&amp;type=recovery" style="display:inline-block;background:#fca311;border:1px solid #fca311;color:#000000;padding:16px 24px;text-decoration:none;font-size:14px;font-weight:800;">
+                  Reset password &nbsp; &rarr;
+                </a>
+              </td>
+            </tr>
+            <tr>
+              <td style="padding:4px 28px 38px;">
+                <table role="presentation" width="100%" cellspacing="0" cellpadding="0" border="0" style="border-top:1px solid #27324a;">
+                  <tr>
+                    <td style="padding-top:20px;font-size:12px;line-height:1.7;color:#858b96;">
+                      This one-time link expires shortly. If you request another reset, use only the newest email. If you did not make this request, you can safely ignore it.
+                    </td>
+                  </tr>
+                </table>
+              </td>
+            </tr>
+            <tr>
+              <td style="background:#14213d;padding:18px 28px;font-family:monospace;font-size:9px;letter-spacing:1.4px;color:#aeb4bf;text-transform:uppercase;">
+                SHAI portfolio system &nbsp; / &nbsp; Authenticated access only
+              </td>
+            </tr>
+          </table>
+        </td>
+      </tr>
+    </table>
+  </body>
+</html>

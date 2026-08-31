@@ -85,12 +85,21 @@ create table if not exists public.site_settings (
   owner_id uuid not null default auth.uid()
     references auth.users (id) on delete cascade,
   updated_at timestamptz not null default now(),
+  maintenance_mode boolean not null default false,
+  maintenance_content jsonb not null default '{
+    "eyebrow": "Scheduled maintenance",
+    "heading": "The portfolio is getting a quick tune-up.",
+    "message": "SHAI is making a few improvements behind the scenes. Please check back soon.",
+    "status_label": "Temporarily offline"
+  }'::jsonb,
   theme jsonb not null default '{}'::jsonb,
   home_content jsonb not null default '{}'::jsonb,
   projects_content jsonb not null default '{}'::jsonb,
   contact_content jsonb not null default '{}'::jsonb,
 
   constraint site_settings_singleton check (id = 'main'),
+  constraint site_settings_maintenance_is_object
+    check (jsonb_typeof(maintenance_content) = 'object'),
   constraint site_settings_theme_is_object
     check (jsonb_typeof(theme) = 'object'),
   constraint site_settings_home_is_object
@@ -100,6 +109,31 @@ create table if not exists public.site_settings (
   constraint site_settings_contact_is_object
     check (jsonb_typeof(contact_content) = 'object')
 );
+
+-- Supports databases where site_settings already exists.
+alter table public.site_settings
+  add column if not exists maintenance_mode boolean not null default false,
+  add column if not exists maintenance_content jsonb not null default '{
+    "eyebrow": "Scheduled maintenance",
+    "heading": "The portfolio is getting a quick tune-up.",
+    "message": "SHAI is making a few improvements behind the scenes. Please check back soon.",
+    "status_label": "Temporarily offline"
+  }'::jsonb;
+
+do $$
+begin
+  if not exists (
+    select 1
+    from pg_catalog.pg_constraint
+    where conname = 'site_settings_maintenance_is_object'
+      and conrelid = 'public.site_settings'::regclass
+  ) then
+    alter table public.site_settings
+      add constraint site_settings_maintenance_is_object
+      check (jsonb_typeof(maintenance_content) = 'object');
+  end if;
+end;
+$$;
 
 drop trigger if exists site_settings_set_updated_at on public.site_settings;
 create trigger site_settings_set_updated_at

@@ -19,7 +19,7 @@ export default async function AdminInquiriesPage() {
     <main className="flex-1 bg-black">
       <section className="relative overflow-hidden border-b border-alabaster-grey/15 bg-prussian-blue">
         <div aria-hidden className="surface-grid absolute inset-0 opacity-40" />
-        <div className="relative mx-auto w-full max-w-[1280px] px-5 py-16 sm:px-8 sm:py-20 lg:px-10">
+        <div className="relative mx-auto w-full max-w-7xl px-5 py-16 sm:px-8 sm:py-20 lg:px-10">
           <Link
             href="/admin"
             className="font-mono text-[9px] uppercase tracking-[0.18em] text-alabaster-grey/50 transition-colors hover:text-orange"
@@ -45,13 +45,13 @@ export default async function AdminInquiriesPage() {
         </div>
       </section>
 
-      <div className="mx-auto w-full max-w-[1280px] px-5 py-16 sm:px-8 sm:py-24 lg:px-10">
+      <div className="mx-auto w-full max-w-7xl px-5 py-16 sm:px-8 sm:py-24 lg:px-10">
         <div className="flex items-end justify-between border-t border-alabaster-grey/20 pt-6">
           <div>
             <p className="font-mono text-[9px] uppercase tracking-[0.2em] text-orange">
               Message archive
             </p>
-            <h2 className="mt-2 text-3xl font-black tracking-[-0.05em] text-white">
+            <h2 className="mt-2 text-3xl font-black tracking-tighter text-white">
               {String(inquiries?.length ?? 0).padStart(2, "0")} conversations
             </h2>
           </div>

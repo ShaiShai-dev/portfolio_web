@@ -43,7 +43,7 @@ export function Navbar() {
       <motion.nav
         animate={{ height: isScrolled ? 62 : 76 }}
         transition={{ duration, ease: [0.22, 1, 0.36, 1] }}
-        className="relative mx-auto flex w-full max-w-[1280px] items-center justify-between px-4 sm:px-8 lg:px-10"
+        className="relative mx-auto flex w-full max-w-7xl items-center justify-between px-4 sm:px-8 lg:px-10"
         aria-label="Main navigation"
       >
         <motion.div

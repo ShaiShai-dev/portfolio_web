@@ -5,6 +5,7 @@ import { getSiteSettingsContent } from "@/lib/site-settings";
 import { createClient } from "@/lib/supabase/server";
 
 const validModules: SiteEditorModule[] = [
+  "maintenance",
   "theme",
   "home",
   "projects",
@@ -26,7 +27,7 @@ export default async function AdminSiteEditorPage({
   const supabase = await createClient();
   const { data, error } = await supabase
     .from("site_settings")
-    .select("*")
+    .select("*, maintenance_mode, maintenance_content")
     .eq("id", "main")
     .maybeSingle();
 

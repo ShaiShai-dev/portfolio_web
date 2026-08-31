@@ -66,7 +66,7 @@ export function ProjectCard({
           </div>
 
           <div className="my-auto py-8">
-            <h3 className="text-3xl font-black leading-[0.95] tracking-[-0.05em] text-white transition-colors group-hover:text-orange sm:text-4xl lg:text-5xl">
+            <h3 className="text-3xl font-black leading-[0.95] tracking-tighter text-white transition-colors group-hover:text-orange sm:text-4xl lg:text-5xl">
               {project.title}
             </h3>
             <p className="mt-5 text-sm leading-6 text-alabaster-grey/65 sm:text-base sm:leading-7">

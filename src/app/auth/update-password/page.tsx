@@ -11,7 +11,7 @@ export default async function UpdatePasswordPage() {
     data: { user },
   } = await supabase.auth.getUser();
 
-  if (!user) redirect("/auth/forgot-password");
+  if (!user) redirect("/auth/forgot-password?error=missing_session");
 
   return (
     <AuthShell

@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import Image from "next/image";
 import Link from "next/link";
-import { notFound } from "next/navigation";
+import { notFound, redirect } from "next/navigation";
 import { createClient } from "@/lib/supabase/server";
 import { Navbar } from "@/components/layout/Navbar";
 import { Footer } from "@/components/layout/Footer";
@@ -43,9 +43,14 @@ export async function generateMetadata({
 }
 
 export default async function ProjectDetailPage({ params }: PageProps) {
+  const { settings } = await getSiteSettings();
+
+  if (settings.maintenance_mode) {
+    redirect("/maintenance");
+  }
+
   const { slug } = await params;
   const project = await getProject(slug);
-  const { settings } = await getSiteSettings();
 
   if (!project) {
     notFound();
@@ -211,7 +216,7 @@ export default async function ProjectDetailPage({ params }: PageProps) {
               <p className="font-mono text-[9px] font-bold uppercase tracking-[0.18em]">
                 Have something similar in mind?
               </p>
-              <p className="mt-2 text-3xl font-black tracking-[-0.05em] sm:text-4xl">
+              <p className="mt-2 text-3xl font-black tracking-tighter sm:text-4xl">
                 Let&apos;s build the next one.
               </p>
             </div>

@@ -3,7 +3,7 @@ import Link from "next/link";
 export function Footer() {
   return (
     <footer className="border-t border-alabaster-grey/15 bg-black">
-      <div className="mx-auto grid w-full max-w-[1280px] gap-8 px-5 py-10 sm:px-8 md:grid-cols-3 md:items-end lg:px-10">
+      <div className="mx-auto grid w-full max-w-7xl gap-8 px-5 py-10 sm:px-8 md:grid-cols-3 md:items-end lg:px-10">
         <div>
           <p className="text-2xl font-bold tracking-[-0.04em] text-white">
             SHAI<span className="text-orange">.</span>

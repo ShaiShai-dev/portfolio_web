@@ -5,6 +5,7 @@ import { createClient } from "@/lib/supabase/server";
 import type {
   ContactContent,
   HomeContent,
+  MaintenanceContent,
   ProjectsContent,
   SiteSettingsContent,
   ThemeSettings,
@@ -116,6 +117,15 @@ function contact(value: ContactContent): ContactContent {
   };
 }
 
+function maintenance(value: MaintenanceContent): MaintenanceContent {
+  return {
+    eyebrow: text(value.eyebrow, "Maintenance label", 100),
+    heading: text(value.heading, "Maintenance heading", 180),
+    message: text(value.message, "Maintenance message", 600),
+    status_label: text(value.status_label, "Maintenance status", 100),
+  };
+}
+
 export async function saveSiteSettings(
   value: SiteSettingsContent,
 ): Promise<SaveSiteSettingsResult> {
@@ -131,6 +141,8 @@ export async function saveSiteSettings(
     }
 
     const sanitized: SiteSettingsContent = {
+      maintenance_mode: value.maintenance_mode === true,
+      maintenance_content: maintenance(value.maintenance_content),
       theme: theme(value.theme),
       home_content: home(value.home_content),
       projects_content: projects(value.projects_content),
@@ -144,9 +156,7 @@ export async function saveSiteSettings(
 
     if (error) return { success: false, message: error.message };
 
-    revalidatePath("/");
-    revalidatePath("/projects");
-    revalidatePath("/admin/site");
+    revalidatePath("/", "layout");
     return { success: true, message: "Website settings published." };
   } catch (error) {
     return {
@@ -154,4 +164,38 @@ export async function saveSiteSettings(
       message: error instanceof Error ? error.message : "Unable to save settings.",
     };
   }
+}
+
+
+export async function setMaintenanceMode(
+  enabled: boolean,
+): Promise<SaveSiteSettingsResult> {
+  const supabase = await createClient();
+  const {
+    data: { user },
+    error: authError,
+  } = await supabase.auth.getUser();
+
+  if (authError || !user) {
+    return { success: false, message: "Your admin session has expired." };
+  }
+
+  const { error } = await supabase.from("site_settings").upsert(
+    {
+      id: "main",
+      owner_id: user.id,
+      maintenance_mode: enabled,
+    },
+    { onConflict: "id" },
+  );
+
+  if (error) return { success: false, message: error.message };
+
+  revalidatePath("/", "layout");
+  return {
+    success: true,
+    message: enabled
+      ? "Maintenance mode is now active."
+      : "The public portfolio is live again.",
+  };
 }

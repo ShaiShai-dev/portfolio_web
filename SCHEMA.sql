@@ -239,12 +239,20 @@ create table public.site_settings (
   id text primary key default 'main',
   owner_id uuid not null default auth.uid() references auth.users (id) on delete cascade,
   updated_at timestamptz not null default now(),
+  maintenance_mode boolean not null default false,
+  maintenance_content jsonb not null default '{
+    "eyebrow": "Scheduled maintenance",
+    "heading": "The portfolio is getting a quick tune-up.",
+    "message": "SHAI is making a few improvements behind the scenes. Please check back soon.",
+    "status_label": "Temporarily offline"
+  }'::jsonb,
   theme jsonb not null default '{}'::jsonb,
   home_content jsonb not null default '{}'::jsonb,
   projects_content jsonb not null default '{}'::jsonb,
   contact_content jsonb not null default '{}'::jsonb,
 
   constraint site_settings_singleton check (id = 'main'),
+  constraint site_settings_maintenance_is_object check (jsonb_typeof(maintenance_content) = 'object'),
   constraint site_settings_theme_is_object check (jsonb_typeof(theme) = 'object'),
   constraint site_settings_home_is_object check (jsonb_typeof(home_content) = 'object'),
   constraint site_settings_projects_is_object check (jsonb_typeof(projects_content) = 'object'),

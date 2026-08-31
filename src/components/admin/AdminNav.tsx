@@ -28,7 +28,7 @@ export default function AdminNav() {
   return (
     <header className="sticky top-0 z-50 border-b border-alabaster-grey/10 bg-black/95 backdrop-blur-xl">
       <nav
-        className="mx-auto flex min-h-[76px] w-full max-w-[1280px] items-center justify-between gap-4 px-4 sm:px-8 lg:px-10"
+        className="mx-auto flex min-h-[76px] w-full max-w-7xl items-center justify-between gap-4 px-4 sm:px-8 lg:px-10"
         aria-label="Admin navigation"
       >
         <Link href="/admin" className="group flex shrink-0 items-center gap-3">

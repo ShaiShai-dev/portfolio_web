@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { EditIcon } from "@/components/admin/EditIcon";
+import MaintenanceModeSwitch from "@/components/admin/MaintenanceModeSwitch";
 import { createClient } from "@/lib/supabase/server";
 
 const editableSections = [
@@ -49,6 +50,7 @@ export default async function AdminDashboardPage() {
     { count: publishedProjects },
     { count: totalInquiries },
     { data: recentInquiries, error: inquiriesError },
+    { data: rawSettings, error: settingsError },
   ] = await Promise.all([
     supabase.from("projects").select("*", { count: "exact", head: true }),
     supabase
@@ -61,6 +63,11 @@ export default async function AdminDashboardPage() {
       .select("*")
       .order("created_at", { ascending: false })
       .limit(4),
+    supabase
+      .from("site_settings")
+      .select("maintenance_mode, maintenance_content")
+      .eq("id", "main")
+      .maybeSingle(),
   ]);
 
   const stats = [
@@ -75,14 +82,14 @@ export default async function AdminDashboardPage() {
         <div aria-hidden className="surface-grid absolute inset-0 opacity-45" />
         <div
           aria-hidden
-          className="absolute -right-32 top-1/2 size-[520px] -translate-y-1/2 rounded-full border border-orange/20"
+          className="absolute -right-32 top-1/2 size-130 -translate-y-1/2 rounded-full border border-orange/20"
         />
         <div
           aria-hidden
-          className="absolute -right-12 top-1/2 size-[330px] -translate-y-1/2 rounded-full border border-dashed border-alabaster-grey/15"
+          className="absolute -right-12 top-1/2 size-82.5 -translate-y-1/2 rounded-full border border-dashed border-alabaster-grey/15"
         />
 
-        <div className="relative mx-auto grid w-full max-w-[1280px] gap-10 px-5 py-20 sm:px-8 sm:py-24 lg:grid-cols-[1.2fr_0.8fr] lg:items-end lg:px-10">
+        <div className="relative mx-auto grid w-full max-w-7xl gap-10 px-5 py-20 sm:px-8 sm:py-24 lg:grid-cols-[1.2fr_0.8fr] lg:items-end lg:px-10">
           <div>
             <div className="flex items-center gap-3 font-mono text-[10px] uppercase tracking-[0.22em] text-orange">
               <span>Admin / 00</span>
@@ -117,14 +124,19 @@ export default async function AdminDashboardPage() {
         </div>
       </section>
 
-      <div className="mx-auto w-full max-w-[1280px] px-5 py-20 sm:px-8 sm:py-24 lg:px-10">
-        <section aria-labelledby="dashboard-stats-title">
+      <div className="mx-auto w-full max-w-7xl px-5 py-20 sm:px-8 sm:py-24 lg:px-10">
+        <MaintenanceModeSwitch
+          initialEnabled={rawSettings?.maintenance_mode === true}
+          databaseReady={!settingsError}
+        />
+
+        <section className="mt-16" aria-labelledby="dashboard-stats-title">
           <div className="flex items-end justify-between border-t border-alabaster-grey/20 pt-6">
             <div>
               <p className="font-mono text-[9px] uppercase tracking-[0.2em] text-orange">
                 Portfolio pulse
               </p>
-              <h2 id="dashboard-stats-title" className="mt-2 text-3xl font-black tracking-[-0.05em] text-white">
+              <h2 id="dashboard-stats-title" className="mt-2 text-3xl font-black tracking-tighter text-white">
                 At a glance<span className="text-orange">.</span>
               </h2>
             </div>

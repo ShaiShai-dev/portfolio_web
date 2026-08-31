@@ -1,6 +1,7 @@
 import type {
   ContactContent,
   HomeContent,
+  MaintenanceContent,
   ProjectsContent,
   SiteSettings,
   SiteSettingsContent,
@@ -13,6 +14,14 @@ export const DEFAULT_THEME: ThemeSettings = {
   orange: "#fca311",
   alabaster_grey: "#e5e5e5",
   white: "#ffffff",
+};
+
+export const DEFAULT_MAINTENANCE_CONTENT: MaintenanceContent = {
+  eyebrow: "Scheduled maintenance",
+  heading: "The portfolio is getting a quick tune-up.",
+  message:
+    "SHAI is making a few improvements behind the scenes. Please check back soon.",
+  status_label: "Temporarily offline",
 };
 
 export const DEFAULT_HOME_CONTENT: HomeContent = {
@@ -76,6 +85,8 @@ export const DEFAULT_CONTACT_CONTENT: ContactContent = {
 };
 
 export const DEFAULT_SITE_SETTINGS: SiteSettingsContent = {
+  maintenance_mode: false,
+  maintenance_content: DEFAULT_MAINTENANCE_CONTENT,
   theme: DEFAULT_THEME,
   home_content: DEFAULT_HOME_CONTENT,
   projects_content: DEFAULT_PROJECTS_CONTENT,
@@ -111,6 +122,11 @@ export function getSiteSettingsContent(
   settings: SiteSettings | null | undefined,
 ): SiteSettingsContent {
   return {
+    maintenance_mode: settings?.maintenance_mode === true,
+    maintenance_content: mergeStrings(
+      DEFAULT_MAINTENANCE_CONTENT,
+      settings?.maintenance_content,
+    ),
     theme: mergeStrings(DEFAULT_THEME, settings?.theme),
     home_content: mergeStrings(DEFAULT_HOME_CONTENT, settings?.home_content),
     projects_content: mergeStrings(
