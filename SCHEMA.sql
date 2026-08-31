@@ -163,7 +163,7 @@ create index projects_slug_idx
 
 -- ----------------------------------------------------------------------------
 -- 6. EDITABLE SITE PROFILE
--- Stores the About content, education, technology roll, and social links.
+-- Stores the About content, education, resume, technology roll, and social links.
 -- JSON arrays keep repeatable content adaptable without schema changes.
 -- ----------------------------------------------------------------------------
 create table public.site_profile (
@@ -173,18 +173,21 @@ create table public.site_profile (
 
   full_name text not null default 'Trishia Kyle Bagtas',
   stage_name text not null default 'SHAI',
-  headline text not null default 'Web and mobile developer building purposeful digital experiences.',
-  bio text not null default 'I am a web and mobile developer and a fourth-year student at National University Baliwag, taking up a Bachelor of Science in Information Technology with a specialization in Mobile and Web Applications.',
+  headline text not null default 'Web and mobile developer turning ideas into purposeful digital solutions.',
+  bio text not null default 'I am a fourth-year BS Information Technology student at National University Baliwag, specializing in Mobile and Web Applications. I transform ideas and user needs into functional digital products through AI-assisted development, rapid prototyping, UI/UX design, system integration, testing, and iterative improvement. My work spans interactive learning, digital storytelling, and management systems, supported by leadership, collaboration, project coordination, and technical documentation.',
   location text not null default 'Baliwag, Bulacan, Philippines',
-  availability text not null default 'Open to collaborations and selected projects',
+  availability text not null default 'Open to internships, collaborations, and selected projects',
 
   education_school text not null default 'National University Baliwag',
-  education_year text not null default '4th Year Student',
+  education_year text not null default 'Fourth Year - 2023 to Present',
   education_degree text not null default 'Bachelor of Science in Information Technology',
   education_specialization text not null default 'Mobile and Web Applications',
 
   portrait_url text,
   portrait_alt text not null default 'Portrait of SHAI',
+  resume_url text not null default '/documents/trishia-kyle-bagtas-resume.pdf',
+  resume_label text not null default 'View full resume',
+  resume_summary text not null default 'Explore my technical skills, selected projects, education, and leadership experience.',
 
   tech_stack jsonb not null default '[]'::jsonb,
   social_links jsonb not null default '[]'::jsonb,

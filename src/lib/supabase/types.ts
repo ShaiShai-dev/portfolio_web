@@ -54,6 +54,9 @@ export type SiteProfileContent = {
   education_specialization: string;
   portrait_url: string | null;
   portrait_alt: string;
+  resume_url: string;
+  resume_label: string;
+  resume_summary: string;
   tech_stack: TechStackItem[];
   social_links: SocialLink[];
 };

@@ -26,6 +26,21 @@ export function BrandIcon({ name, ...props }: BrandIconProps) {
           <ellipse cx="12" cy="12" rx="9" ry="3.6" transform="rotate(120 12 12)" />
         </svg>
       );
+    case "flutter":
+      return (
+        <svg {...commonProps}>
+          <path d="M14.8 2.8 5.2 12.4l3.1 3.1L21 2.8z" />
+          <path d="m11.5 18.7 3.3 3.3H21l-6.4-6.5z" />
+          <path d="m8.3 15.5 3.2 3.2 3.1-3.2-3.1-3.1z" />
+        </svg>
+      );
+    case "dart":
+      return (
+        <svg {...commonProps}>
+          <path d="m5.2 4.2 9.4-1.1 4.3 4.3 1 9.4-5.4 4.1-8.8-3.2-2.6-9z" />
+          <path d="m5.2 4.2 10.2 10.2-.9 6.5M3.1 8.7l8.5-.4 7.3-.9" />
+        </svg>
+      );
     case "nextjs":
       return (
         <svg {...commonProps}>
@@ -129,6 +144,35 @@ export function BrandIcon({ name, ...props }: BrandIconProps) {
           <circle cx="15" cy="15.2" r="1.2" fill="currentColor" stroke="none" />
           <circle cx="15" cy="8.7" r="1.2" fill="currentColor" stroke="none" />
           <path d="m10 9.4 4 4.8M10.2 8.7H14" />
+        </svg>
+      );
+    case "uiux":
+      return (
+        <svg {...commonProps}>
+          <rect x="3" y="3" width="18" height="18" rx="2" />
+          <path d="M3 8h18M8 8v13M11.5 12h6M11.5 16h4" />
+          <circle cx="6" cy="5.5" r=".7" fill="currentColor" stroke="none" />
+        </svg>
+      );
+    case "ai":
+      return (
+        <svg {...commonProps}>
+          <path d="M12 2.8c.8 4.9 3.4 7.5 8.2 8.2-4.8.8-7.4 3.4-8.2 8.2-.8-4.8-3.4-7.4-8.2-8.2 4.8-.7 7.4-3.3 8.2-8.2Z" />
+          <path d="M19 2.8c.2 1.5 1 2.3 2.5 2.5C20 5.5 19.2 6.3 19 7.8c-.2-1.5-1-2.3-2.5-2.5C18 5.1 18.8 4.3 19 2.8Z" />
+        </svg>
+      );
+    case "notion":
+      return (
+        <svg {...commonProps}>
+          <rect x="3" y="3" width="18" height="18" rx="1" />
+          <path d="M7.5 17V7l9 10V7" />
+        </svg>
+      );
+    case "canva":
+      return (
+        <svg {...commonProps}>
+          <circle cx="12" cy="12" r="9.5" />
+          <path d="M15.7 8.5a5 5 0 1 0 0 7" />
         </svg>
       );
     case "facebook":

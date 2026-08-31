@@ -91,6 +91,13 @@ function sanitizeProfile(value: SiteProfileContent): SiteProfileContent {
     throw new Error("Portrait must be a secure uploaded image URL.");
   }
 
+  const resumeUrl = requiredText(value.resume_url, "Resume URL", 500);
+  if (!/^(https:\/\/|\/(?!\/))/i.test(resumeUrl)) {
+    throw new Error(
+      "Resume URL must be a secure https:// URL or a local path beginning with /.",
+    );
+  }
+
   return {
     full_name: requiredText(value.full_name, "Full name", 120),
     stage_name: requiredText(value.stage_name, "Stage name", 60),
@@ -112,6 +119,9 @@ function sanitizeProfile(value: SiteProfileContent): SiteProfileContent {
     ),
     portrait_url: portraitUrl,
     portrait_alt: requiredText(value.portrait_alt, "Portrait description", 180),
+    resume_url: resumeUrl,
+    resume_label: requiredText(value.resume_label, "Resume button label", 80),
+    resume_summary: requiredText(value.resume_summary, "Resume summary", 400),
     tech_stack: sanitizeTechStack(value.tech_stack),
     social_links: sanitizeSocialLinks(value.social_links),
   };

@@ -300,6 +300,63 @@ export default function SiteProfileForm({
 
       <EditorSection
         index="03"
+        title="Resume preview"
+        description="Control the public resume card, preview link, and download shown on the About section."
+      >
+        <div className="grid gap-5 sm:grid-cols-2">
+          <Field label="Button label" htmlFor="resume_label">
+            <input
+              id="resume_label"
+              required
+              value={profile.resume_label}
+              onChange={(event) =>
+                updateTextField("resume_label", event.target.value)
+              }
+              className={inputClassName}
+            />
+          </Field>
+          <Field label="PDF URL or public path" htmlFor="resume_url">
+            <input
+              id="resume_url"
+              required
+              value={profile.resume_url}
+              onChange={(event) =>
+                updateTextField("resume_url", event.target.value)
+              }
+              placeholder="/documents/your-resume.pdf"
+              className={inputClassName}
+            />
+          </Field>
+        </div>
+        <Field label="Resume summary" htmlFor="resume_summary">
+          <textarea
+            id="resume_summary"
+            required
+            rows={3}
+            value={profile.resume_summary}
+            onChange={(event) =>
+              updateTextField("resume_summary", event.target.value)
+            }
+            className={inputClassName}
+          />
+        </Field>
+        <div className="flex flex-wrap items-center gap-3 border border-alabaster-grey/15 bg-black/40 p-4">
+          <span className="font-mono text-[9px] uppercase tracking-[0.16em] text-alabaster-grey/50">
+            Current document
+          </span>
+          <a
+            href={profile.resume_url}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="font-mono text-[10px] uppercase tracking-[0.14em] text-orange underline-offset-4 hover:underline"
+          >
+            Open PDF ↗
+          </a>
+        </div>
+      </EditorSection>
+
+      <EditorSection
+        index="04"
         title="Technology roll"
         description="Add, reorder, rename, or remove technologies. The selected mark appears in the animated logo rail."
         action={
@@ -352,7 +409,7 @@ export default function SiteProfileForm({
       </EditorSection>
 
       <EditorSection
-        index="04"
+        index="05"
         title="Social links"
         description="Manage contact platforms and profile URLs. Facebook, Instagram, LinkedIn, and X are included by default."
         action={

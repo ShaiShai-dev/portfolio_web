@@ -133,6 +133,60 @@ export async function About() {
           </FadeIn>
         </div>
 
+        <FadeIn className="mt-20 border-t border-alabaster-grey/25 pt-8 sm:mt-28">
+          <div className="grid overflow-hidden border border-alabaster-grey/20 bg-black lg:grid-cols-[0.72fr_1.28fr]">
+            <div className="relative flex min-h-80 flex-col justify-between overflow-hidden bg-orange p-6 text-black sm:p-8 lg:min-h-[620px]">
+              <div aria-hidden className="surface-grid absolute inset-0 opacity-20" />
+              <div className="relative">
+                <p className="font-mono text-[9px] font-black uppercase tracking-[0.2em]">
+                  Profile document / 03
+                </p>
+                <h3 className="mt-5 max-w-sm text-4xl font-black leading-[0.92] tracking-[-0.06em] sm:text-5xl">
+                  Experience,
+                  <br />skills &amp;
+                  <br />selected work.
+                </h3>
+                <p className="mt-6 max-w-sm text-sm leading-6 text-black/70">
+                  {profile.resume_summary}
+                </p>
+              </div>
+
+              <div className="relative mt-12 space-y-3">
+                <a
+                  href={profile.resume_url}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="flex items-center justify-between border border-black bg-black px-5 py-4 font-mono text-[10px] font-black uppercase tracking-[0.16em] text-white transition-colors hover:bg-orange hover:text-black"
+                >
+                  <span>{profile.resume_label}</span>
+                  <span aria-hidden>&nearr;</span>
+                </a>
+                <a
+                  href={profile.resume_url}
+                  download
+                  className="flex items-center justify-between border border-black px-5 py-4 font-mono text-[10px] font-black uppercase tracking-[0.16em] transition-colors hover:bg-black hover:text-white"
+                >
+                  <span>Download PDF</span>
+                  <span aria-hidden>&darr;</span>
+                </a>
+              </div>
+            </div>
+
+            <div className="relative min-h-[520px] bg-alabaster-grey sm:min-h-[620px]">
+              <div className="flex h-11 items-center justify-between border-b border-black/15 bg-white px-4 font-mono text-[8px] uppercase tracking-[0.16em] text-black/55">
+                <span>Trishia Kyle Bagtas &mdash; Resume</span>
+                <span>PDF / Preview</span>
+              </div>
+              <iframe
+                src={`${profile.resume_url}#view=FitH&toolbar=0&navpanes=0`}
+                title="Preview of Trishia Kyle Bagtas' resume"
+                loading="lazy"
+                className="h-[calc(100%-2.75rem)] w-full bg-white"
+              />
+            </div>
+          </div>
+        </FadeIn>
+
         <FadeIn className="mt-20 sm:mt-28">
           <div className="mb-8 flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
             <div>
@@ -155,7 +209,7 @@ export async function About() {
           <div className="grid gap-8 md:grid-cols-[0.7fr_1.3fr] md:gap-14">
             <div>
               <p className="font-mono text-[9px] uppercase tracking-[0.2em] text-orange">
-                Find me online / 04
+                Find me online / 05
               </p>
               <h3 className="mt-3 text-4xl font-black tracking-[-0.055em] text-white">
                 Let&apos;s connect<span className="text-orange">.</span>

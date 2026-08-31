@@ -7,6 +7,8 @@ import type {
 
 export const TECH_ICON_OPTIONS = [
   { value: "react", label: "React" },
+  { value: "flutter", label: "Flutter" },
+  { value: "dart", label: "Dart" },
   { value: "nextjs", label: "Next.js" },
   { value: "typescript", label: "TypeScript" },
   { value: "javascript", label: "JavaScript" },
@@ -18,6 +20,11 @@ export const TECH_ICON_OPTIONS = [
   { value: "css", label: "CSS3" },
   { value: "figma", label: "Figma" },
   { value: "git", label: "Git" },
+  { value: "github", label: "GitHub" },
+  { value: "uiux", label: "UI/UX Design" },
+  { value: "ai", label: "AI / Generative AI" },
+  { value: "notion", label: "Notion" },
+  { value: "canva", label: "Canva" },
   { value: "code", label: "Generic code" },
 ] as const;
 
@@ -32,14 +39,20 @@ export const SOCIAL_PLATFORM_OPTIONS = [
 ] as const;
 
 const defaultTechStack: TechStackItem[] = [
-  { id: "react", name: "React", icon: "react" },
-  { id: "nextjs", name: "Next.js", icon: "nextjs" },
-  { id: "react-native", name: "React Native", icon: "react" },
+  { id: "flutter", name: "Flutter", icon: "flutter" },
+  { id: "dart", name: "Dart", icon: "dart" },
+  { id: "javascript", name: "JavaScript", icon: "javascript" },
   { id: "typescript", name: "TypeScript", icon: "typescript" },
-  { id: "nodejs", name: "Node.js", icon: "nodejs" },
+  { id: "react", name: "React", icon: "react" },
+  { id: "react-native", name: "React Native", icon: "react" },
+  { id: "nextjs", name: "Next.js", icon: "nextjs" },
   { id: "supabase", name: "Supabase", icon: "supabase" },
-  { id: "postgresql", name: "PostgreSQL", icon: "postgresql" },
   { id: "tailwind", name: "Tailwind CSS", icon: "tailwind" },
+  { id: "git-github", name: "Git / GitHub", icon: "github" },
+  { id: "ui-ux", name: "UI/UX Design", icon: "uiux" },
+  { id: "ai-api", name: "AI API Integration", icon: "ai" },
+  { id: "notion", name: "Notion", icon: "notion" },
+  { id: "canva", name: "Canva", icon: "canva" },
 ];
 
 const defaultSocialLinks: SocialLink[] = [
@@ -47,36 +60,45 @@ const defaultSocialLinks: SocialLink[] = [
     id: "facebook",
     platform: "facebook",
     label: "Facebook",
-    url: "https://facebook.com/",
-  },
-  {
-    id: "instagram",
-    platform: "instagram",
-    label: "Instagram",
-    url: "https://instagram.com/",
+    url: "https://www.facebook.com/trishia.kyle.n.bagtas/",
   },
   {
     id: "linkedin",
     platform: "linkedin",
     label: "LinkedIn",
-    url: "https://linkedin.com/",
+    url: "https://www.linkedin.com/in/trishia-kyle-bagtas-391916305",
   },
-  { id: "x", platform: "x", label: "X", url: "https://x.com/" },
+  {
+    id: "github",
+    platform: "github",
+    label: "GitHub",
+    url: "https://github.com/ShaiShai-dev",
+  },
+  {
+    id: "email",
+    platform: "email",
+    label: "Email",
+    url: "mailto:trishiabagtas2004@gmail.com",
+  },
 ];
 
 export const DEFAULT_SITE_PROFILE: SiteProfileContent = {
   full_name: "Trishia Kyle Bagtas",
   stage_name: "SHAI",
-  headline: "Web and mobile developer building purposeful digital experiences.",
-  bio: "I am a web and mobile developer and a fourth-year student at National University Baliwag, taking up a Bachelor of Science in Information Technology with a specialization in Mobile and Web Applications.",
+  headline: "Web and mobile developer turning ideas into purposeful digital solutions.",
+  bio: "I am a fourth-year BS Information Technology student at National University Baliwag, specializing in Mobile and Web Applications. I transform ideas and user needs into functional digital products through AI-assisted development, rapid prototyping, UI/UX design, system integration, testing, and iterative improvement. My work spans interactive learning, digital storytelling, and management systems, supported by leadership, collaboration, project coordination, and technical documentation.",
   location: "Baliwag, Bulacan, Philippines",
-  availability: "Open to collaborations and selected projects",
+  availability: "Open to internships, collaborations, and selected projects",
   education_school: "National University Baliwag",
-  education_year: "4th Year Student",
+  education_year: "Fourth Year - 2023 to Present",
   education_degree: "Bachelor of Science in Information Technology",
   education_specialization: "Mobile and Web Applications",
   portrait_url: null,
   portrait_alt: "Portrait of SHAI",
+  resume_url: "/documents/trishia-kyle-bagtas-resume.pdf",
+  resume_label: "View full resume",
+  resume_summary:
+    "Explore my technical skills, selected projects, education, and leadership experience.",
   tech_stack: defaultTechStack,
   social_links: defaultSocialLinks,
 };
@@ -125,6 +147,10 @@ export function getSiteProfileContent(
       DEFAULT_SITE_PROFILE.education_specialization,
     portrait_url: profile.portrait_url || null,
     portrait_alt: profile.portrait_alt || DEFAULT_SITE_PROFILE.portrait_alt,
+    resume_url: profile.resume_url || DEFAULT_SITE_PROFILE.resume_url,
+    resume_label: profile.resume_label || DEFAULT_SITE_PROFILE.resume_label,
+    resume_summary:
+      profile.resume_summary || DEFAULT_SITE_PROFILE.resume_summary,
     tech_stack:
       Array.isArray(profile.tech_stack) &&
       profile.tech_stack.every(isTechStackItem) &&
