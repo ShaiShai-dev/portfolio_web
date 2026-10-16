@@ -15,6 +15,9 @@ export async function About() {
     .eq("id", "main")
     .maybeSingle();
   const profile = getSiteProfileContent(data);
+  const visibleCustomSections = profile.custom_sections.filter(
+    (section) => section.items.length > 0,
+  );
 
   return (
     <div className="relative overflow-hidden bg-prussian-blue">
@@ -187,6 +190,62 @@ export async function About() {
             </div>
           </div>
         </FadeIn>
+
+        {visibleCustomSections.length > 0 && (
+          <div className="mt-20 space-y-16 border-t border-alabaster-grey/25 pt-8 sm:mt-28">
+            {visibleCustomSections.map((section, sectionIndex) => (
+              <FadeIn key={section.id} delay={sectionIndex * 0.06}>
+                <div className="grid gap-8 md:grid-cols-[0.7fr_1.3fr] md:gap-14">
+                  <div>
+                    <p className="font-mono text-[9px] uppercase tracking-[0.2em] text-orange">
+                      Profile records / {String(sectionIndex + 4).padStart(2, "0")}
+                    </p>
+                    <h3 className="mt-3 text-4xl font-black tracking-[-0.055em] text-white sm:text-5xl">
+                      {section.title}<span className="text-orange">.</span>
+                    </h3>
+                    <p className="mt-4 max-w-sm text-sm leading-6 text-alabaster-grey/55">
+                      Selected milestones, credentials, and professional development.
+                    </p>
+                  </div>
+
+                  <div className="grid gap-3 sm:grid-cols-2">
+                    {section.items.map((item, itemIndex) => (
+                      <article
+                        key={item.id}
+                        className="group relative flex min-h-60 flex-col border border-alabaster-grey/20 bg-black/20 p-5 transition-colors hover:border-orange hover:bg-black/45"
+                      >
+                        <div className="flex items-start justify-between gap-4">
+                          <span className="font-mono text-[9px] uppercase tracking-[0.18em] text-orange">
+                            /{String(itemIndex + 1).padStart(2, "0")}
+                          </span>
+                          <time className="text-right font-mono text-[8px] uppercase tracking-[0.16em] text-alabaster-grey/45">
+                            {item.date}
+                          </time>
+                        </div>
+                        <h4 className="mt-8 text-2xl font-black leading-tight tracking-[-0.035em] text-white">
+                          {item.title}
+                        </h4>
+                        <p className="mt-4 flex-1 text-sm leading-6 text-alabaster-grey/65">
+                          {item.description}
+                        </p>
+                        {item.link && (
+                          <a
+                            href={item.link}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="mt-6 inline-flex items-center gap-3 border-t border-alabaster-grey/15 pt-4 font-mono text-[9px] font-bold uppercase tracking-[0.16em] text-orange transition-colors hover:text-white"
+                          >
+                            View credential <span aria-hidden>&nearr;</span>
+                          </a>
+                        )}
+                      </article>
+                    ))}
+                  </div>
+                </div>
+              </FadeIn>
+            ))}
+          </div>
+        )}
 
         <FadeIn className="mt-20 sm:mt-28">
           <div className="mb-8 flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">

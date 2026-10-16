@@ -11,6 +11,7 @@ import {
 } from "@/lib/site-profile";
 import { saveSiteProfile } from "@/lib/actions/site-profile";
 import type {
+  ProfileSection,
   SiteProfileContent,
   SocialLink,
   TechStackItem,
@@ -38,13 +39,20 @@ export default function SiteProfileForm({
     ...initialProfile,
     tech_stack: initialProfile.tech_stack.map((item) => ({ ...item })),
     social_links: initialProfile.social_links.map((item) => ({ ...item })),
+    custom_sections: initialProfile.custom_sections.map((section) => ({
+      ...section,
+      items: section.items.map((item) => ({ ...item })),
+    })),
   }));
   const [saving, setSaving] = useState(false);
   const [message, setMessage] = useState("");
   const [success, setSuccess] = useState(false);
 
   function updateTextField(
-    field: Exclude<keyof SiteProfileContent, "tech_stack" | "social_links">,
+    field: Exclude<
+      keyof SiteProfileContent,
+      "tech_stack" | "social_links" | "custom_sections"
+    >,
     value: string,
   ) {
     setProfile((current) => ({ ...current, [field]: value }));
@@ -127,6 +135,131 @@ export default function SiteProfileForm({
       [nextItems[index], nextItems[target]] = [nextItems[target], nextItems[index]];
       return { ...current, social_links: nextItems };
     });
+  }
+
+  function updateCustomSection(
+    sectionIndex: number,
+    patch: Partial<ProfileSection>,
+  ) {
+    setProfile((current) => ({
+      ...current,
+      custom_sections: current.custom_sections.map((section, index) =>
+        index === sectionIndex ? { ...section, ...patch } : section,
+      ),
+    }));
+  }
+
+  function addCustomSection() {
+    setProfile((current) => ({
+      ...current,
+      custom_sections: [
+        ...current.custom_sections,
+        {
+          id: makeId("section"),
+          title: "Achievements",
+          items: [],
+        },
+      ],
+    }));
+  }
+
+  function removeCustomSection(sectionIndex: number) {
+    setProfile((current) => ({
+      ...current,
+      custom_sections: current.custom_sections.filter(
+        (_, index) => index !== sectionIndex,
+      ),
+    }));
+  }
+
+  function moveCustomSection(sectionIndex: number, direction: -1 | 1) {
+    setProfile((current) => {
+      const target = sectionIndex + direction;
+      if (target < 0 || target >= current.custom_sections.length) return current;
+      const sections = [...current.custom_sections];
+      [sections[sectionIndex], sections[target]] = [
+        sections[target],
+        sections[sectionIndex],
+      ];
+      return { ...current, custom_sections: sections };
+    });
+  }
+
+  function addCustomSectionItem(sectionIndex: number) {
+    setProfile((current) => ({
+      ...current,
+      custom_sections: current.custom_sections.map((section, index) =>
+        index === sectionIndex
+          ? {
+              ...section,
+              items: [
+                ...section.items,
+                {
+                  id: makeId("entry"),
+                  title: "New entry",
+                  date: "2026",
+                  description: "Add a short description of this achievement.",
+                  link: "",
+                },
+              ],
+            }
+          : section,
+      ),
+    }));
+  }
+
+  function updateCustomSectionItem(
+    sectionIndex: number,
+    itemIndex: number,
+    patch: Partial<ProfileSection["items"][number]>,
+  ) {
+    setProfile((current) => ({
+      ...current,
+      custom_sections: current.custom_sections.map((section, index) =>
+        index === sectionIndex
+          ? {
+              ...section,
+              items: section.items.map((item, currentItemIndex) =>
+                currentItemIndex === itemIndex ? { ...item, ...patch } : item,
+              ),
+            }
+          : section,
+      ),
+    }));
+  }
+
+  function removeCustomSectionItem(sectionIndex: number, itemIndex: number) {
+    setProfile((current) => ({
+      ...current,
+      custom_sections: current.custom_sections.map((section, index) =>
+        index === sectionIndex
+          ? {
+              ...section,
+              items: section.items.filter(
+                (_, currentItemIndex) => currentItemIndex !== itemIndex,
+              ),
+            }
+          : section,
+      ),
+    }));
+  }
+
+  function moveCustomSectionItem(
+    sectionIndex: number,
+    itemIndex: number,
+    direction: -1 | 1,
+  ) {
+    setProfile((current) => ({
+      ...current,
+      custom_sections: current.custom_sections.map((section, index) => {
+        if (index !== sectionIndex) return section;
+        const target = itemIndex + direction;
+        if (target < 0 || target >= section.items.length) return section;
+        const items = [...section.items];
+        [items[itemIndex], items[target]] = [items[target], items[itemIndex]];
+        return { ...section, items };
+      }),
+    }));
   }
 
   async function handleSubmit(event: FormEvent<HTMLFormElement>) {
@@ -356,6 +489,186 @@ export default function SiteProfileForm({
 
       <EditorSection
         index="04"
+        title="Custom profile sections"
+        description="Create flexible sections for certificates, achievements, training, leadership, or any other resume highlight."
+        action={
+          <button
+            type="button"
+            onClick={addCustomSection}
+            className="admin-secondary-button"
+          >
+            + Add section
+          </button>
+        }
+      >
+        {profile.custom_sections.length === 0 ? (
+          <div className="fine-grid border border-dashed border-alabaster-grey/25 bg-black/30 px-5 py-10 text-center">
+            <p className="font-mono text-[9px] uppercase tracking-[0.18em] text-orange">
+              No custom sections yet
+            </p>
+            <p className="mx-auto mt-3 max-w-lg text-sm leading-6 text-alabaster-grey/60">
+              Add a section such as Certificates or Achievements, then create as
+              many dated entries as you need.
+            </p>
+          </div>
+        ) : (
+          <div className="space-y-5">
+            {profile.custom_sections.map((section, sectionIndex) => (
+              <section
+                key={section.id}
+                className="overflow-hidden border border-alabaster-grey/20 bg-black/35"
+              >
+                <div className="flex flex-col gap-4 border-b border-alabaster-grey/15 bg-prussian-blue/30 p-4 sm:flex-row sm:items-end sm:justify-between">
+                  <Field
+                    label="Section title"
+                    htmlFor={`section-title-${section.id}`}
+                  >
+                    <input
+                      id={`section-title-${section.id}`}
+                      required
+                      value={section.title}
+                      onChange={(event) =>
+                        updateCustomSection(sectionIndex, {
+                          title: event.target.value,
+                        })
+                      }
+                      placeholder="Certificates"
+                      className={inputClassName}
+                    />
+                  </Field>
+                  <div className="flex flex-wrap items-center gap-2">
+                    <button
+                      type="button"
+                      onClick={() => addCustomSectionItem(sectionIndex)}
+                      className="admin-secondary-button"
+                    >
+                      + Add entry
+                    </button>
+                    <ItemActions
+                      index={sectionIndex}
+                      length={profile.custom_sections.length}
+                      onMove={(direction) =>
+                        moveCustomSection(sectionIndex, direction)
+                      }
+                      onRemove={() => removeCustomSection(sectionIndex)}
+                      itemLabel="section"
+                    />
+                  </div>
+                </div>
+
+                <div className="space-y-4 p-4">
+                  {section.items.length === 0 ? (
+                    <p className="border border-dashed border-alabaster-grey/15 px-4 py-7 text-center text-sm text-alabaster-grey/45">
+                      This section is hidden publicly until it has an entry.
+                    </p>
+                  ) : (
+                    section.items.map((item, itemIndex) => (
+                      <article
+                        key={item.id}
+                        className="relative grid gap-4 border border-alabaster-grey/15 bg-prussian-blue/20 p-4 lg:grid-cols-[1fr_0.45fr_auto]"
+                      >
+                        <Field
+                          label="Entry title"
+                          htmlFor={`entry-title-${item.id}`}
+                        >
+                          <input
+                            id={`entry-title-${item.id}`}
+                            required
+                            value={item.title}
+                            onChange={(event) =>
+                              updateCustomSectionItem(sectionIndex, itemIndex, {
+                                title: event.target.value,
+                              })
+                            }
+                            placeholder="Certificate or achievement title"
+                            className={inputClassName}
+                          />
+                        </Field>
+                        <Field
+                          label="Date achieved or taken"
+                          htmlFor={`entry-date-${item.id}`}
+                        >
+                          <input
+                            id={`entry-date-${item.id}`}
+                            required
+                            value={item.date}
+                            onChange={(event) =>
+                              updateCustomSectionItem(sectionIndex, itemIndex, {
+                                date: event.target.value,
+                              })
+                            }
+                            placeholder="October 2026"
+                            className={inputClassName}
+                          />
+                        </Field>
+                        <div className="self-end">
+                          <ItemActions
+                            index={itemIndex}
+                            length={section.items.length}
+                            onMove={(direction) =>
+                              moveCustomSectionItem(
+                                sectionIndex,
+                                itemIndex,
+                                direction,
+                              )
+                            }
+                            onRemove={() =>
+                              removeCustomSectionItem(sectionIndex, itemIndex)
+                            }
+                            itemLabel="entry"
+                          />
+                        </div>
+                        <div className="lg:col-span-2">
+                          <Field
+                            label="Description"
+                            htmlFor={`entry-description-${item.id}`}
+                          >
+                            <textarea
+                              id={`entry-description-${item.id}`}
+                              required
+                              rows={3}
+                              value={item.description}
+                              onChange={(event) =>
+                                updateCustomSectionItem(sectionIndex, itemIndex, {
+                                  description: event.target.value,
+                                })
+                              }
+                              placeholder="What you completed, learned, or achieved."
+                              className={inputClassName}
+                            />
+                          </Field>
+                        </div>
+                        <div className="lg:col-span-3">
+                          <Field
+                            label="Optional certificate or reference link"
+                            htmlFor={`entry-link-${item.id}`}
+                          >
+                            <input
+                              id={`entry-link-${item.id}`}
+                              type="url"
+                              value={item.link}
+                              onChange={(event) =>
+                                updateCustomSectionItem(sectionIndex, itemIndex, {
+                                  link: event.target.value,
+                                })
+                              }
+                              placeholder="https://..."
+                              className={inputClassName}
+                            />
+                          </Field>
+                        </div>
+                      </article>
+                    ))
+                  )}
+                </div>
+              </section>
+            ))}
+          </div>
+        )}
+      </EditorSection>
+
+      <EditorSection
+        index="05"
         title="Technology roll"
         description="Add, reorder, rename, or remove technologies. The selected mark appears in the animated logo rail."
         action={
@@ -408,7 +721,7 @@ export default function SiteProfileForm({
       </EditorSection>
 
       <EditorSection
-        index="05"
+        index="06"
         title="Social links"
         description="Manage contact platforms and profile URLs. Facebook, Instagram, LinkedIn, and X are included by default."
         action={
@@ -556,11 +869,13 @@ function ItemActions({
   length,
   onMove,
   onRemove,
+  itemLabel = "item",
 }: {
   index: number;
   length: number;
   onMove: (direction: -1 | 1) => void;
   onRemove: () => void;
+  itemLabel?: string;
 }) {
   return (
     <div className="flex items-center gap-1">
@@ -569,7 +884,7 @@ function ItemActions({
         disabled={index === 0}
         onClick={() => onMove(-1)}
         className="admin-icon-button"
-        aria-label="Move item up"
+        aria-label={`Move ${itemLabel} up`}
       >
         ↑
       </button>
@@ -578,7 +893,7 @@ function ItemActions({
         disabled={index === length - 1}
         onClick={() => onMove(1)}
         className="admin-icon-button"
-        aria-label="Move item down"
+        aria-label={`Move ${itemLabel} down`}
       >
         ↓
       </button>
@@ -586,7 +901,7 @@ function ItemActions({
         type="button"
         onClick={onRemove}
         className="admin-icon-button hover:border-orange hover:text-orange"
-        aria-label="Remove item"
+        aria-label={`Remove ${itemLabel}`}
       >
         ×
       </button>

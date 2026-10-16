@@ -1,4 +1,5 @@
 import type {
+  ProfileSection,
   SiteProfile,
   SiteProfileContent,
   SocialLink,
@@ -101,6 +102,7 @@ export const DEFAULT_SITE_PROFILE: SiteProfileContent = {
     "Explore my technical skills, selected projects, education, and leadership experience.",
   tech_stack: defaultTechStack,
   social_links: defaultSocialLinks,
+  custom_sections: [],
 };
 
 function isTechStackItem(value: unknown): value is TechStackItem {
@@ -121,6 +123,27 @@ function isSocialLink(value: unknown): value is SocialLink {
     typeof item.platform === "string" &&
     typeof item.label === "string" &&
     typeof item.url === "string"
+  );
+}
+
+function isProfileSection(value: unknown): value is ProfileSection {
+  if (!value || typeof value !== "object") return false;
+  const section = value as Partial<ProfileSection>;
+  return (
+    typeof section.id === "string" &&
+    typeof section.title === "string" &&
+    Array.isArray(section.items) &&
+    section.items.every((item) =>
+      Boolean(
+        item &&
+          typeof item === "object" &&
+          typeof item.id === "string" &&
+          typeof item.title === "string" &&
+          typeof item.date === "string" &&
+          typeof item.description === "string" &&
+          typeof item.link === "string",
+      ),
+    )
   );
 }
 
@@ -163,5 +186,10 @@ export function getSiteProfileContent(
       profile.social_links.length > 0
         ? profile.social_links
         : DEFAULT_SITE_PROFILE.social_links,
+    custom_sections:
+      Array.isArray(profile.custom_sections) &&
+      profile.custom_sections.every(isProfileSection)
+        ? profile.custom_sections
+        : DEFAULT_SITE_PROFILE.custom_sections,
   };
 }

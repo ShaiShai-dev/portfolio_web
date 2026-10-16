@@ -48,6 +48,18 @@ function list(value: unknown, label: string, maxItems: number) {
   return items;
 }
 
+function choice<T extends string>(
+  value: unknown,
+  label: string,
+  choices: readonly T[],
+) {
+  const result = text(value, label, 30);
+  if (!choices.includes(result as T)) {
+    throw new Error(`${label} has an unsupported value.`);
+  }
+  return result as T;
+}
+
 function theme(value: ThemeSettings): ThemeSettings {
   const color = (candidate: unknown, label: string) => {
     const result = text(candidate, label, 9).toLowerCase();
@@ -79,6 +91,24 @@ function home(value: HomeContent): HomeContent {
     marquee_items: list(value.marquee_items, "Home marquee", 12),
     image_url: imageUrl(value.image_url, "Home image"),
     image_alt: text(value.image_alt, "Home image description", 180),
+    image_frame_size: choice(value.image_frame_size, "Hero frame size", [
+      "compact",
+      "standard",
+      "wide",
+    ]),
+    image_frame_aspect: choice(value.image_frame_aspect, "Hero frame shape", [
+      "portrait",
+      "square",
+      "landscape",
+    ]),
+    image_fit: choice(value.image_fit, "Hero image fit", ["cover", "contain"]),
+    image_position: choice(value.image_position, "Hero image position", [
+      "center",
+      "top",
+      "bottom",
+      "left",
+      "right",
+    ]),
   };
 }
 

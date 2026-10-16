@@ -20,9 +20,9 @@ export default async function AdminAboutPage() {
           Edit the About section
         </h1>
         <p className="mt-3 max-w-2xl text-sm leading-6 text-alabaster-grey/65">
-          Update your identity, education, animated technology roll, and social
-          contact links. Modules can be reordered and expanded without changing
-          the public page code.
+          Update your identity, education, resume, certificates and achievements,
+          animated technology roll, and social contact links. Custom sections can
+          be reordered and expanded without changing the public page code.
         </p>
 
         <div className="mt-8">

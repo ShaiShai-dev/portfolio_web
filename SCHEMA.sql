@@ -163,7 +163,8 @@ create index projects_slug_idx
 
 -- ----------------------------------------------------------------------------
 -- 6. EDITABLE SITE PROFILE
--- Stores the About content, education, resume, technology roll, and social links.
+-- Stores About content, education, resume, flexible profile sections,
+-- technology roll, and social links.
 -- JSON arrays keep repeatable content adaptable without schema changes.
 -- ----------------------------------------------------------------------------
 create table public.site_profile (
@@ -191,10 +192,12 @@ create table public.site_profile (
 
   tech_stack jsonb not null default '[]'::jsonb,
   social_links jsonb not null default '[]'::jsonb,
+  custom_sections jsonb not null default '[]'::jsonb,
 
   constraint site_profile_singleton check (id = 'main'),
   constraint site_profile_tech_stack_is_array check (jsonb_typeof(tech_stack) = 'array'),
-  constraint site_profile_social_links_is_array check (jsonb_typeof(social_links) = 'array')
+  constraint site_profile_social_links_is_array check (jsonb_typeof(social_links) = 'array'),
+  constraint site_profile_custom_sections_is_array check (jsonb_typeof(custom_sections) = 'array')
 );
 
 create trigger site_profile_set_updated_at

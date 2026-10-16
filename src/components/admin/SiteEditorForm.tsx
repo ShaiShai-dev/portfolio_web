@@ -355,8 +355,70 @@ export default function SiteEditorForm({
               <ListField label="Metadata — one item per line" value={settings.home_content.meta_items} onChange={(meta_items) => updateHome({ meta_items })} />
               <ListField label="Moving ticker — one item per line" value={settings.home_content.marquee_items} onChange={(marquee_items) => updateHome({ marquee_items })} />
             </div>
-            <MediaUploadField label="Hero feature image" folder="home" value={settings.home_content.image_url} alt={settings.home_content.image_alt} onChange={(image_url) => updateHome({ image_url })} />
-            <TextField label="Image description for accessibility" value={settings.home_content.image_alt} onChange={(image_alt) => updateHome({ image_alt })} />
+            <div className="fine-grid space-y-4 border border-alabaster-grey/15 bg-prussian-blue/20 p-4 sm:p-5">
+              <div>
+                <p className="font-mono text-[9px] uppercase tracking-[0.18em] text-orange">
+                  Hero image studio
+                </p>
+                <p className="mt-2 text-xs leading-5 text-alabaster-grey/55">
+                  Upload or replace the photo, then adjust its frame and focal point. The preview updates before publishing.
+                </p>
+              </div>
+              <MediaUploadField
+                label="Hero feature image"
+                folder="home"
+                value={settings.home_content.image_url}
+                alt={settings.home_content.image_alt}
+                previewAspect={settings.home_content.image_frame_aspect}
+                previewFit={settings.home_content.image_fit}
+                previewPosition={settings.home_content.image_position}
+                onChange={(image_url) => updateHome({ image_url })}
+              />
+              <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
+                <SelectField
+                  label="Frame size"
+                  value={settings.home_content.image_frame_size}
+                  options={[
+                    { value: "compact", label: "Compact" },
+                    { value: "standard", label: "Standard" },
+                    { value: "wide", label: "Wide" },
+                  ]}
+                  onChange={(image_frame_size) => updateHome({ image_frame_size: image_frame_size as HomeContent["image_frame_size"] })}
+                />
+                <SelectField
+                  label="Frame shape"
+                  value={settings.home_content.image_frame_aspect}
+                  options={[
+                    { value: "portrait", label: "Portrait" },
+                    { value: "square", label: "Square" },
+                    { value: "landscape", label: "Landscape" },
+                  ]}
+                  onChange={(image_frame_aspect) => updateHome({ image_frame_aspect: image_frame_aspect as HomeContent["image_frame_aspect"] })}
+                />
+                <SelectField
+                  label="Picture sizing"
+                  value={settings.home_content.image_fit}
+                  options={[
+                    { value: "cover", label: "Crop to fill" },
+                    { value: "contain", label: "Show full photo" },
+                  ]}
+                  onChange={(image_fit) => updateHome({ image_fit: image_fit as HomeContent["image_fit"] })}
+                />
+                <SelectField
+                  label="Picture position"
+                  value={settings.home_content.image_position}
+                  options={[
+                    { value: "center", label: "Center" },
+                    { value: "top", label: "Top" },
+                    { value: "bottom", label: "Bottom" },
+                    { value: "left", label: "Left" },
+                    { value: "right", label: "Right" },
+                  ]}
+                  onChange={(image_position) => updateHome({ image_position: image_position as HomeContent["image_position"] })}
+                />
+              </div>
+              <TextField label="Image description for accessibility" value={settings.home_content.image_alt} onChange={(image_alt) => updateHome({ image_alt })} />
+            </div>
           </EditorModule>
         )}
 
@@ -475,6 +537,35 @@ function ListField({ label, value, onChange }: { label: string; value: string[];
         onChange={(event) => onChange(event.target.value.split("\n"))}
         className={inputClassName}
       />
+    </label>
+  );
+}
+
+function SelectField({
+  label,
+  value,
+  options,
+  onChange,
+}: {
+  label: string;
+  value: string;
+  options: Array<{ value: string; label: string }>;
+  onChange: (value: string) => void;
+}) {
+  return (
+    <label className="flex min-w-0 flex-col gap-1.5">
+      <span className={labelClassName}>{label}</span>
+      <select
+        value={value}
+        onChange={(event) => onChange(event.target.value)}
+        className={inputClassName}
+      >
+        {options.map((option) => (
+          <option key={option.value} value={option.value} className="bg-black">
+            {option.label}
+          </option>
+        ))}
+      </select>
     </label>
   );
 }

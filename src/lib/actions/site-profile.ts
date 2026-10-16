@@ -3,6 +3,7 @@
 import { revalidatePath } from "next/cache";
 import { createClient } from "@/lib/supabase/server";
 import type {
+  ProfileSection,
   SiteProfileContent,
   SocialLink,
   TechStackItem,
@@ -85,6 +86,73 @@ function sanitizeSocialLinks(value: unknown): SocialLink[] {
   });
 }
 
+function sanitizeCustomSections(value: unknown): ProfileSection[] {
+  if (!Array.isArray(value)) {
+    throw new Error("Custom profile sections must be a list.");
+  }
+  if (value.length > 12) {
+    throw new Error("The About page supports up to 12 custom sections.");
+  }
+
+  return value.map((rawSection, sectionIndex) => {
+    if (!rawSection || typeof rawSection !== "object") {
+      throw new Error(`Section ${sectionIndex + 1} is invalid.`);
+    }
+
+    const section = rawSection as Partial<ProfileSection>;
+    if (!Array.isArray(section.items)) {
+      throw new Error(`Section ${sectionIndex + 1} entries must be a list.`);
+    }
+    if (section.items.length > 24) {
+      throw new Error(`Section ${sectionIndex + 1} supports up to 24 entries.`);
+    }
+
+    return {
+      id: requiredText(section.id, `Section ${sectionIndex + 1} ID`, 100),
+      title: requiredText(section.title, `Section ${sectionIndex + 1} title`, 120),
+      items: section.items.map((rawItem, itemIndex) => {
+        if (!rawItem || typeof rawItem !== "object") {
+          throw new Error(
+            `Entry ${itemIndex + 1} in section ${sectionIndex + 1} is invalid.`,
+          );
+        }
+
+        const item = rawItem as Partial<ProfileSection["items"][number]>;
+        const link = typeof item.link === "string" ? item.link.trim() : "";
+        if (link && !/^https:\/\//i.test(link)) {
+          throw new Error(
+            `Entry ${itemIndex + 1} link must start with https://.`,
+          );
+        }
+
+        return {
+          id: requiredText(
+            item.id,
+            `Entry ${itemIndex + 1} ID in section ${sectionIndex + 1}`,
+            100,
+          ),
+          title: requiredText(
+            item.title,
+            `Entry ${itemIndex + 1} title in section ${sectionIndex + 1}`,
+            160,
+          ),
+          date: requiredText(
+            item.date,
+            `Entry ${itemIndex + 1} date in section ${sectionIndex + 1}`,
+            100,
+          ),
+          description: requiredText(
+            item.description,
+            `Entry ${itemIndex + 1} description in section ${sectionIndex + 1}`,
+            1_200,
+          ),
+          link,
+        };
+      }),
+    };
+  });
+}
+
 function sanitizeProfile(value: SiteProfileContent): SiteProfileContent {
   const portraitUrl = value.portrait_url?.trim() || null;
   if (portraitUrl && !/^https:\/\//i.test(portraitUrl)) {
@@ -124,6 +192,7 @@ function sanitizeProfile(value: SiteProfileContent): SiteProfileContent {
     resume_summary: requiredText(value.resume_summary, "Resume summary", 400),
     tech_stack: sanitizeTechStack(value.tech_stack),
     social_links: sanitizeSocialLinks(value.social_links),
+    custom_sections: sanitizeCustomSections(value.custom_sections),
   };
 }
 

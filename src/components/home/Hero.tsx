@@ -10,6 +10,26 @@ const reveal = {
   visible: { opacity: 1, y: 0 },
 };
 
+const frameSizeClasses: Record<HomeContent["image_frame_size"], string> = {
+  compact: "w-[78%] max-w-[440px]",
+  standard: "w-[90%] max-w-[560px]",
+  wide: "w-full max-w-[680px]",
+};
+
+const frameAspectClasses: Record<HomeContent["image_frame_aspect"], string> = {
+  portrait: "aspect-[4/4.6]",
+  square: "aspect-square",
+  landscape: "aspect-[4/3]",
+};
+
+const imagePositionClasses: Record<HomeContent["image_position"], string> = {
+  center: "object-center",
+  top: "object-top",
+  bottom: "object-bottom",
+  left: "object-left",
+  right: "object-right",
+};
+
 export function Hero({ content }: { content: HomeContent }) {
   const shouldReduceMotion = useReducedMotion();
 
@@ -102,7 +122,7 @@ export function Hero({ content }: { content: HomeContent }) {
           initial={{ opacity: 0, scale: shouldReduceMotion ? 1 : 0.96 }}
           animate={{ opacity: 1, scale: 1 }}
           transition={{ duration: shouldReduceMotion ? 0 : 0.8, delay: 0.25 }}
-          className="relative isolate mx-auto w-full max-w-[560px] px-5 py-8 sm:px-8 lg:mx-0 lg:ml-auto"
+          className={`relative isolate mx-auto px-5 py-8 sm:px-8 lg:mx-0 lg:ml-auto ${frameSizeClasses[content.image_frame_size] ?? frameSizeClasses.standard}`}
         >
           <div
             aria-hidden
@@ -132,7 +152,7 @@ export function Hero({ content }: { content: HomeContent }) {
               <span className="text-orange">[ TB—26 ]</span>
             </div>
 
-            <div className="fine-grid relative aspect-[4/4.6] overflow-hidden border border-alabaster-grey/25 bg-prussian-blue/35 shadow-[0_28px_80px_rgba(0,0,0,0.45)]">
+            <div className={`fine-grid relative overflow-hidden border border-alabaster-grey/25 bg-prussian-blue/35 shadow-[0_28px_80px_rgba(0,0,0,0.45)] ${frameAspectClasses[content.image_frame_aspect] ?? frameAspectClasses.portrait}`}>
               {content.image_url ? (
                 <Image
                   src={content.image_url}
@@ -140,7 +160,7 @@ export function Hero({ content }: { content: HomeContent }) {
                   fill
                   priority
                   sizes="(min-width: 1024px) 42vw, 100vw"
-                  className="z-10 object-cover"
+                  className={`z-10 ${content.image_fit === "contain" ? "object-contain" : "object-cover"} ${imagePositionClasses[content.image_position] ?? imagePositionClasses.center}`}
                 />
               ) : (
                 <div className="absolute inset-0 grid place-items-center">

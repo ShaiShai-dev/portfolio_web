@@ -130,6 +130,10 @@ export const DEFAULT_HOME_CONTENT: HomeContent = {
   ],
   image_url: null,
   image_alt: "SHAI working on a digital product",
+  image_frame_size: "standard",
+  image_frame_aspect: "portrait",
+  image_fit: "cover",
+  image_position: "center",
 };
 
 export const DEFAULT_PROJECTS_CONTENT: ProjectsContent = {

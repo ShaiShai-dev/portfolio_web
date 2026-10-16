@@ -41,6 +41,20 @@ export type SocialLink = {
   url: string;
 };
 
+export type ProfileSectionItem = {
+  id: string;
+  title: string;
+  date: string;
+  description: string;
+  link: string;
+};
+
+export type ProfileSection = {
+  id: string;
+  title: string;
+  items: ProfileSectionItem[];
+};
+
 export type SiteProfileContent = {
   full_name: string;
   stage_name: string;
@@ -59,6 +73,7 @@ export type SiteProfileContent = {
   resume_summary: string;
   tech_stack: TechStackItem[];
   social_links: SocialLink[];
+  custom_sections: ProfileSection[];
 };
 
 export type ThemeSettings = {
@@ -81,6 +96,10 @@ export type HomeContent = {
   marquee_items: string[];
   image_url: string | null;
   image_alt: string;
+  image_frame_size: "compact" | "standard" | "wide";
+  image_frame_aspect: "portrait" | "square" | "landscape";
+  image_fit: "cover" | "contain";
+  image_position: "center" | "top" | "bottom" | "left" | "right";
 };
 
 export type ProjectsContent = {

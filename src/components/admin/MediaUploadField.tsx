@@ -13,16 +13,35 @@ export default function MediaUploadField({
   value,
   alt,
   onChange,
+  previewAspect = "landscape",
+  previewFit = "cover",
+  previewPosition = "center",
 }: {
   label: string;
   folder: "home" | "about" | "projects" | "contact";
   value: string | null;
   alt: string;
   onChange: (url: string | null) => void;
+  previewAspect?: "portrait" | "square" | "landscape";
+  previewFit?: "cover" | "contain";
+  previewPosition?: "center" | "top" | "bottom" | "left" | "right";
 }) {
   const inputRef = useRef<HTMLInputElement>(null);
   const [uploading, setUploading] = useState(false);
   const [error, setError] = useState("");
+  const aspectClass = {
+    portrait: "aspect-[4/5] sm:w-36",
+    square: "aspect-square sm:w-40",
+    landscape: "aspect-[16/9] sm:w-48",
+  }[previewAspect];
+  const fitClass = previewFit === "contain" ? "object-contain" : "object-cover";
+  const positionClass = {
+    center: "object-center",
+    top: "object-top",
+    bottom: "object-bottom",
+    left: "object-left",
+    right: "object-right",
+  }[previewPosition];
 
   async function upload(file: File) {
     if (!ACCEPTED_TYPES.includes(file.type)) {
@@ -73,14 +92,14 @@ export default function MediaUploadField({
   return (
     <div className="border border-alabaster-grey/15 bg-black/35 p-4">
       <div className="flex flex-col gap-4 sm:flex-row sm:items-center">
-        <div className="relative grid aspect-[16/9] w-full shrink-0 place-items-center overflow-hidden border border-alabaster-grey/15 bg-prussian-blue/40 sm:w-48">
+        <div className={`relative grid w-full shrink-0 place-items-center overflow-hidden border border-alabaster-grey/15 bg-prussian-blue/40 ${aspectClass}`}>
           {value ? (
             <Image
               src={value}
               alt={alt || `${label} preview`}
               fill
               sizes="192px"
-              className="object-cover"
+              className={`${fitClass} ${positionClass}`}
             />
           ) : (
             <span className="font-mono text-[9px] uppercase tracking-[0.16em] text-alabaster-grey/35">

@@ -21,7 +21,8 @@ const editableSections = [
   {
     number: "03",
     name: "About",
-    description: "Identity, education, portrait, technology roll, and social links.",
+    description:
+      "Identity, education, resume, custom achievements, technology roll, and social links.",
     href: "/admin/about",
     treatment: "bg-prussian-blue",
   },

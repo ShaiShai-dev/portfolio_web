@@ -29,7 +29,8 @@ create trigger projects_set_updated_at
   execute function public.set_updated_at();
 
 -- ---------------------------------------------------------------------------
--- Editable About profile, education, technology stack, and social links
+-- Editable About profile, education, custom sections, technology stack, and
+-- social links
 -- ---------------------------------------------------------------------------
 create table if not exists public.site_profile (
   id text primary key default 'main',
@@ -63,12 +64,15 @@ create table if not exists public.site_profile (
     'Explore my technical skills, selected projects, education, and leadership experience.',
   tech_stack jsonb not null default '[]'::jsonb,
   social_links jsonb not null default '[]'::jsonb,
+  custom_sections jsonb not null default '[]'::jsonb,
 
   constraint site_profile_singleton check (id = 'main'),
   constraint site_profile_tech_stack_is_array
     check (jsonb_typeof(tech_stack) = 'array'),
   constraint site_profile_social_links_is_array
-    check (jsonb_typeof(social_links) = 'array')
+    check (jsonb_typeof(social_links) = 'array'),
+  constraint site_profile_custom_sections_is_array
+    check (jsonb_typeof(custom_sections) = 'array')
 );
 
 -- Supports databases where the first profile migration was already applied.
@@ -80,7 +84,23 @@ alter table public.site_profile
   add column if not exists resume_label text not null default
     'View full resume',
   add column if not exists resume_summary text not null default
-    'Explore my technical skills, selected projects, education, and leadership experience.';
+    'Explore my technical skills, selected projects, education, and leadership experience.',
+  add column if not exists custom_sections jsonb not null default '[]'::jsonb;
+
+do $$
+begin
+  if not exists (
+    select 1
+    from pg_catalog.pg_constraint
+    where conname = 'site_profile_custom_sections_is_array'
+      and conrelid = 'public.site_profile'::regclass
+  ) then
+    alter table public.site_profile
+      add constraint site_profile_custom_sections_is_array
+      check (jsonb_typeof(custom_sections) = 'array');
+  end if;
+end;
+$$;
 
 drop trigger if exists site_profile_set_updated_at on public.site_profile;
 create trigger site_profile_set_updated_at
