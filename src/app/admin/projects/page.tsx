@@ -2,6 +2,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { createClient } from "@/lib/supabase/server";
 import DeleteProjectButton from "@/components/admin/DeleteProjectButton";
+import { formatProjectTimeline } from "@/lib/project-date";
 
 export default async function AdminProjectsPage() {
   const supabase = await createClient();
@@ -37,10 +38,7 @@ export default async function AdminProjectsPage() {
 
         <div className="mt-6 flex flex-col gap-3">
           {projects?.map((project) => (
-            <div
-              key={project.id}
-              className="flex flex-col gap-4 rounded-lg border border-white/10 bg-prussian-blue/50 p-4 sm:flex-row sm:items-center"
-            >
+            <div key={project.id} className="flex flex-col gap-4 rounded-lg border border-white/10 bg-prussian-blue/50 p-4 sm:flex-row sm:items-center">
               <div className="relative h-16 w-24 shrink-0 overflow-hidden rounded-md bg-black/40">
                 {project.thumbnail_url ? (
                   <Image
@@ -80,6 +78,20 @@ export default async function AdminProjectsPage() {
                     {project.tech_stack.join(", ")}
                   </p>
                 )}
+                <p className="mt-2 font-mono text-[8px] uppercase tracking-[0.14em] text-orange/75">
+                  {project.gallery_style === "floating"
+                    ? "Floating gallery"
+                    : "Stack view"}
+                  {formatProjectTimeline(
+                    project.development_start,
+                    project.development_end,
+                  )
+                    ? ` · ${formatProjectTimeline(
+                        project.development_start,
+                        project.development_end,
+                      )}`
+                    : ""}
+                </p>
               </div>
 
               <div className="flex shrink-0 items-center gap-2">

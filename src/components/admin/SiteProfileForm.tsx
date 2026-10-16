@@ -157,6 +157,7 @@ export default function SiteProfileForm({
         {
           id: makeId("section"),
           title: "Achievements",
+          display_style: "stack",
           items: [],
         },
       ],
@@ -197,9 +198,11 @@ export default function SiteProfileForm({
                 {
                   id: makeId("entry"),
                   title: "New entry",
-                  date: "2026",
+                  date: "",
                   description: "Add a short description of this achievement.",
                   link: "",
+                  image_url: null,
+                  image_alt: "",
                 },
               ],
             }
@@ -490,7 +493,7 @@ export default function SiteProfileForm({
       <EditorSection
         index="04"
         title="Custom profile sections"
-        description="Create flexible sections for certificates, achievements, training, leadership, or any other resume highlight."
+        description="Create flexible sections for certificates, achievements, training, leadership, or any other resume highlight, then choose how each gallery moves."
         action={
           <button
             type="button"
@@ -508,7 +511,7 @@ export default function SiteProfileForm({
             </p>
             <p className="mx-auto mt-3 max-w-lg text-sm leading-6 text-alabaster-grey/60">
               Add a section such as Certificates or Achievements, then create as
-              many dated entries as you need.
+              many entries as you need with optional dates, images, and links.
             </p>
           </div>
         ) : (
@@ -519,23 +522,43 @@ export default function SiteProfileForm({
                 className="overflow-hidden border border-alabaster-grey/20 bg-black/35"
               >
                 <div className="flex flex-col gap-4 border-b border-alabaster-grey/15 bg-prussian-blue/30 p-4 sm:flex-row sm:items-end sm:justify-between">
-                  <Field
-                    label="Section title"
-                    htmlFor={`section-title-${section.id}`}
-                  >
-                    <input
-                      id={`section-title-${section.id}`}
-                      required
-                      value={section.title}
-                      onChange={(event) =>
-                        updateCustomSection(sectionIndex, {
-                          title: event.target.value,
-                        })
-                      }
-                      placeholder="Certificates"
-                      className={inputClassName}
-                    />
-                  </Field>
+                  <div className="grid min-w-0 flex-1 gap-4 sm:grid-cols-[minmax(0,1fr)_220px]">
+                    <Field
+                      label="Section title"
+                      htmlFor={`section-title-${section.id}`}
+                    >
+                      <input
+                        id={`section-title-${section.id}`}
+                        required
+                        value={section.title}
+                        onChange={(event) =>
+                          updateCustomSection(sectionIndex, {
+                            title: event.target.value,
+                          })
+                        }
+                        placeholder="Certificates"
+                        className={inputClassName}
+                      />
+                    </Field>
+                    <Field
+                      label="Gallery animation"
+                      htmlFor={`section-style-${section.id}`}
+                    >
+                      <select
+                        id={`section-style-${section.id}`}
+                        value={section.display_style}
+                        onChange={(event) =>
+                          updateCustomSection(sectionIndex, {
+                            display_style: event.target.value as ProfileSection["display_style"],
+                          })
+                        }
+                        className={inputClassName}
+                      >
+                        <option value="stack">Stack view</option>
+                        <option value="floating">Floating gallery</option>
+                      </select>
+                    </Field>
+                  </div>
                   <div className="flex flex-wrap items-center gap-2">
                     <button
                       type="button"
@@ -585,19 +608,18 @@ export default function SiteProfileForm({
                           />
                         </Field>
                         <Field
-                          label="Date achieved or taken"
+                          label="Date achieved or taken (optional)"
                           htmlFor={`entry-date-${item.id}`}
                         >
                           <input
                             id={`entry-date-${item.id}`}
-                            required
+                            type="month"
                             value={item.date}
                             onChange={(event) =>
                               updateCustomSectionItem(sectionIndex, itemIndex, {
                                 date: event.target.value,
                               })
                             }
-                            placeholder="October 2026"
                             className={inputClassName}
                           />
                         </Field>
@@ -639,8 +661,50 @@ export default function SiteProfileForm({
                           </Field>
                         </div>
                         <div className="lg:col-span-3">
+                          <MediaUploadField
+                            label="Certificate or achievement image (optional)"
+                            folder="certificates"
+                            value={item.image_url}
+                            alt={item.image_alt || item.title}
+                            previewAspect="landscape"
+                            previewFit="contain"
+                            onChange={(image_url) =>
+                              updateCustomSectionItem(sectionIndex, itemIndex, {
+                                image_url,
+                                image_alt:
+                                  image_url && !item.image_alt
+                                    ? item.title
+                                    : item.image_alt,
+                              })
+                            }
+                          />
+                        </div>
+                        {item.image_url && (
+                          <div className="lg:col-span-3">
+                            <Field
+                              label="Image description for accessibility"
+                              htmlFor={`entry-image-alt-${item.id}`}
+                            >
+                              <input
+                                id={`entry-image-alt-${item.id}`}
+                                required
+                                value={item.image_alt}
+                                onChange={(event) =>
+                                  updateCustomSectionItem(
+                                    sectionIndex,
+                                    itemIndex,
+                                    { image_alt: event.target.value },
+                                  )
+                                }
+                                placeholder={`Image of ${item.title}`}
+                                className={inputClassName}
+                              />
+                            </Field>
+                          </div>
+                        )}
+                        <div className="lg:col-span-3">
                           <Field
-                            label="Optional certificate or reference link"
+                            label="Credential or LinkedIn link (optional)"
                             htmlFor={`entry-link-${item.id}`}
                           >
                             <input

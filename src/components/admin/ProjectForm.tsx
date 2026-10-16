@@ -12,6 +12,10 @@ import Image from "next/image";
 import { useRouter } from "next/navigation";
 import { AnimatePresence, motion } from "framer-motion";
 import { createClient } from "@/lib/supabase/client";
+import {
+  fromProjectMonthInput,
+  toProjectMonthInput,
+} from "@/lib/project-date";
 import type { Project } from "@/lib/supabase/types";
 
 const MAX_IMAGE_SIZE = 10 * 1024 * 1024;
@@ -87,6 +91,15 @@ export default function ProjectForm({ project }: { project?: Project }) {
   const [screenshotUrls, setScreenshotUrls] = useState<string[]>(
     project?.screenshot_urls ?? [],
   );
+  const [galleryStyle, setGalleryStyle] = useState<"stack" | "floating">(
+    project?.gallery_style === "floating" ? "floating" : "stack",
+  );
+  const [developmentStart, setDevelopmentStart] = useState(
+    toProjectMonthInput(project?.development_start),
+  );
+  const [developmentEnd, setDevelopmentEnd] = useState(
+    toProjectMonthInput(project?.development_end),
+  );
   const [liveUrl, setLiveUrl] = useState(project?.live_url ?? "");
   const [githubUrl, setGithubUrl] = useState(project?.github_url ?? "");
   const [isPublished, setIsPublished] = useState(
@@ -157,8 +170,18 @@ export default function ProjectForm({ project }: { project?: Project }) {
 
   async function handleSubmit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
-    setSubmitting(true);
     setError(null);
+
+    if (
+      developmentStart &&
+      developmentEnd &&
+      developmentEnd < developmentStart
+    ) {
+      setError("Development end must be the same month as or later than the start.");
+      return;
+    }
+
+    setSubmitting(true);
 
     const supabase = createClient();
     const techStack = techStackInput
@@ -174,6 +197,9 @@ export default function ProjectForm({ project }: { project?: Project }) {
       tech_stack: techStack,
       thumbnail_url: thumbnailUrl,
       screenshot_urls: screenshotUrls,
+      gallery_style: galleryStyle,
+      development_start: fromProjectMonthInput(developmentStart),
+      development_end: fromProjectMonthInput(developmentEnd),
       live_url: liveUrl || null,
       github_url: githubUrl || null,
       is_published: isPublished,
@@ -294,14 +320,124 @@ export default function ProjectForm({ project }: { project?: Project }) {
               Separate each technology with a comma.
             </p>
           </Field>
+
+          <div className="border-t border-alabaster-grey/15 pt-5">
+            <div className="mb-4 flex flex-wrap items-end justify-between gap-2">
+              <div>
+                <p className={labelClassName}>Development timeline</p>
+                <p className="mt-2 text-xs leading-5 text-alabaster-grey/40">
+                  Optional month and year. Add either date or both.
+                </p>
+              </div>
+              <span className="font-mono text-[8px] uppercase tracking-[0.14em] text-orange">
+                Optional
+              </span>
+            </div>
+            <div className="grid gap-5 sm:grid-cols-2">
+              <Field label="Development started" htmlFor="development_start">
+                <input
+                  id="development_start"
+                  type="month"
+                  value={developmentStart}
+                  max={developmentEnd || undefined}
+                  onChange={(event) => setDevelopmentStart(event.target.value)}
+                  className={inputClassName}
+                />
+              </Field>
+              <Field label="Development ended" htmlFor="development_end">
+                <input
+                  id="development_end"
+                  type="month"
+                  value={developmentEnd}
+                  min={developmentStart || undefined}
+                  onChange={(event) => setDevelopmentEnd(event.target.value)}
+                  className={inputClassName}
+                />
+              </Field>
+            </div>
+          </div>
         </FormSection>
 
         <FormSection
           number="03"
           icon={<MediaIcon />}
           title="Project media"
-          description="Upload a gallery cover and supporting interface screenshots."
+          description="Upload a gallery cover and supporting interface screenshots, then choose how the gallery moves."
         >
+          <fieldset>
+            <legend className={labelClassName}>Screenshot gallery animation</legend>
+            <div className="mt-3 grid gap-3 sm:grid-cols-2">
+              {(
+                [
+                  {
+                    value: "stack",
+                    label: "Stack view",
+                    description: "Overlapping frames with the selected image in front.",
+                  },
+                  {
+                    value: "floating",
+                    label: "Floating gallery",
+                    description: "Airier frames with gentle independent movement.",
+                  },
+                ] as const
+              ).map((option) => {
+                const selected = galleryStyle === option.value;
+
+                return (
+                  <label
+                    key={option.value}
+                    className={`group cursor-pointer border p-4 transition-all ${
+                      selected
+                        ? "border-orange bg-orange/10 shadow-[0_0_0_2px_rgba(252,163,17,0.08)]"
+                        : "border-alabaster-grey/15 bg-black/45 hover:border-alabaster-grey/35"
+                    }`}
+                  >
+                    <input
+                      type="radio"
+                      name="gallery_style"
+                      value={option.value}
+                      checked={selected}
+                      onChange={() => setGalleryStyle(option.value)}
+                      className="sr-only"
+                    />
+                    <span className="flex items-center justify-between gap-4">
+                      <span>
+                        <span className="block text-sm font-black text-white">
+                          {option.label}
+                        </span>
+                        <span className="mt-1 block text-xs leading-5 text-alabaster-grey/45">
+                          {option.description}
+                        </span>
+                      </span>
+                      <span
+                        aria-hidden
+                        className={`grid size-8 shrink-0 place-items-center rounded-full border font-mono text-[10px] ${
+                          selected
+                            ? "border-orange bg-orange text-black"
+                            : "border-alabaster-grey/20 text-alabaster-grey/35"
+                        }`}
+                      >
+                        {selected ? "✓" : "○"}
+                      </span>
+                    </span>
+                    <span className="relative mt-4 block h-16 overflow-hidden border border-alabaster-grey/10 bg-prussian-blue/60">
+                      {[0, 1, 2].map((previewIndex) => (
+                        <span
+                          key={previewIndex}
+                          className="absolute left-1/2 top-1/2 h-9 w-14 border border-orange/45 bg-black/80"
+                          style={{
+                            transform: `translate(calc(-50% + ${(previewIndex - 1) * (option.value === "stack" ? 24 : 36)}px), calc(-50% + ${(previewIndex % 2) * (option.value === "stack" ? 4 : 10)}px)) rotate(${(previewIndex - 1) * (option.value === "stack" ? 5 : 2)}deg)`,
+                            zIndex: previewIndex === 1 ? 3 : 2,
+                          }}
+                        />
+                      ))}
+                    </span>
+                  </label>
+                );
+              })}
+            </div>
+          </fieldset>
+
           <div className="grid gap-5 lg:grid-cols-2">
             <UploadDropzone
               id="thumbnail-upload"
@@ -545,6 +681,11 @@ export default function ProjectForm({ project }: { project?: Project }) {
               <ReadinessItem
                 ready={screenshotUrls.length > 0}
                 label="Screenshot gallery"
+                optional
+              />
+              <ReadinessItem
+                ready={Boolean(developmentStart || developmentEnd)}
+                label="Development timeline"
                 optional
               />
             </div>

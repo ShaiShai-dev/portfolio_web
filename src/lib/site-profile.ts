@@ -126,25 +126,67 @@ function isSocialLink(value: unknown): value is SocialLink {
   );
 }
 
-function isProfileSection(value: unknown): value is ProfileSection {
-  if (!value || typeof value !== "object") return false;
-  const section = value as Partial<ProfileSection>;
-  return (
-    typeof section.id === "string" &&
-    typeof section.title === "string" &&
-    Array.isArray(section.items) &&
-    section.items.every((item) =>
-      Boolean(
-        item &&
-          typeof item === "object" &&
-          typeof item.id === "string" &&
-          typeof item.title === "string" &&
-          typeof item.date === "string" &&
-          typeof item.description === "string" &&
-          typeof item.link === "string",
-      ),
-    )
-  );
+function normalizeProfileSections(value: unknown): ProfileSection[] {
+  if (!Array.isArray(value)) return [];
+
+  return value.flatMap((rawSection) => {
+    if (!rawSection || typeof rawSection !== "object") return [];
+    const section = rawSection as Partial<ProfileSection>;
+    if (
+      typeof section.id !== "string" ||
+      typeof section.title !== "string" ||
+      !Array.isArray(section.items)
+    ) {
+      return [];
+    }
+
+    const items = section.items.flatMap((rawItem) => {
+      if (!rawItem || typeof rawItem !== "object") return [];
+      const item = rawItem as Partial<ProfileSection["items"][number]>;
+      if (
+        typeof item.id !== "string" ||
+        typeof item.title !== "string" ||
+        typeof item.description !== "string"
+      ) {
+        return [];
+      }
+
+      const imageUrl =
+        typeof item.image_url === "string" &&
+        /^https:\/\//i.test(item.image_url)
+          ? item.image_url
+          : null;
+
+      return [
+        {
+          id: item.id,
+          title: item.title,
+          date:
+            typeof item.date === "string" &&
+            /^\d{4}-(0[1-9]|1[0-2])$/.test(item.date)
+              ? item.date
+              : "",
+          description: item.description,
+          link: typeof item.link === "string" ? item.link : "",
+          image_url: imageUrl,
+          image_alt:
+            typeof item.image_alt === "string" && item.image_alt.trim()
+              ? item.image_alt
+              : item.title,
+        },
+      ];
+    });
+
+    return [
+      {
+        id: section.id,
+        title: section.title,
+        display_style:
+          section.display_style === "floating" ? "floating" : "stack",
+        items,
+      },
+    ];
+  });
 }
 
 export function getSiteProfileContent(
@@ -186,10 +228,6 @@ export function getSiteProfileContent(
       profile.social_links.length > 0
         ? profile.social_links
         : DEFAULT_SITE_PROFILE.social_links,
-    custom_sections:
-      Array.isArray(profile.custom_sections) &&
-      profile.custom_sections.every(isProfileSection)
-        ? profile.custom_sections
-        : DEFAULT_SITE_PROFILE.custom_sections,
+    custom_sections: normalizeProfileSections(profile.custom_sections),
   };
 }

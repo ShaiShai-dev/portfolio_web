@@ -7,7 +7,9 @@ import { Navbar } from "@/components/layout/Navbar";
 import { Footer } from "@/components/layout/Footer";
 import { Container } from "@/components/ui/Container";
 import { FadeIn } from "@/components/ui/FadeIn";
+import { ProjectMediaGallery } from "@/components/projects/ProjectMediaGallery";
 import { getSiteSettings } from "@/lib/get-site-settings";
+import { formatProjectTimeline } from "@/lib/project-date";
 import { themeStyle } from "@/lib/theme-style";
 
 type PageProps = {
@@ -59,6 +61,10 @@ export default async function ProjectDetailPage({ params }: PageProps) {
   const paragraphs = project.description
     ? project.description.split(/\n\s*\n/).filter((p) => p.trim().length > 0)
     : [];
+  const projectTimeline = formatProjectTimeline(
+    project.development_start,
+    project.development_end,
+  );
 
   return (
     <div
@@ -96,15 +102,22 @@ export default async function ProjectDetailPage({ params }: PageProps) {
               </div>
 
               <div className="mt-14 flex flex-col gap-8 border-t border-alabaster-grey/20 pt-6 md:flex-row md:items-end md:justify-between">
-                <div className="flex max-w-2xl flex-wrap gap-x-5 gap-y-2">
-                  {project.tech_stack.map((tech) => (
-                    <span
-                      key={tech}
-                      className="font-mono text-[9px] uppercase tracking-[0.16em] text-alabaster-grey/60"
-                    >
-                      + {tech}
-                    </span>
-                  ))}
+                <div className="max-w-2xl">
+                  {projectTimeline && (
+                    <p className="mb-4 font-mono text-[9px] uppercase tracking-[0.17em] text-orange">
+                      Development / {projectTimeline}
+                    </p>
+                  )}
+                  <div className="flex flex-wrap gap-x-5 gap-y-2">
+                    {project.tech_stack.map((tech) => (
+                      <span
+                        key={tech}
+                        className="font-mono text-[9px] uppercase tracking-[0.16em] text-alabaster-grey/60"
+                      >
+                        + {tech}
+                      </span>
+                    ))}
+                  </div>
                 </div>
 
                 <div className="flex flex-wrap gap-3">
@@ -187,25 +200,13 @@ export default async function ProjectDetailPage({ params }: PageProps) {
                   {String(project.screenshot_urls.length).padStart(2, "0")} frames
                 </span>
               </div>
-              <div className="grid grid-cols-1 gap-6 sm:grid-cols-2">
-                {project.screenshot_urls.map((url, index) => (
-                  <div
-                    key={url}
-                    className="relative aspect-video overflow-hidden border border-alabaster-grey/15 bg-prussian-blue/35"
-                  >
-                    <Image
-                      src={url}
-                      alt={`${project.title} screenshot ${index + 1}`}
-                      fill
-                      sizes="(min-width: 640px) 50vw, 100vw"
-                      className="object-cover transition-transform duration-700 hover:scale-[1.02]"
-                    />
-                    <span className="absolute bottom-3 left-3 bg-black px-2.5 py-1.5 font-mono text-[8px] uppercase tracking-[0.14em] text-white">
-                      Frame {String(index + 1).padStart(2, "0")}
-                    </span>
-                  </div>
-                ))}
-              </div>
+              <ProjectMediaGallery
+                projectTitle={project.title}
+                imageUrls={project.screenshot_urls}
+                style={
+                  project.gallery_style === "floating" ? "floating" : "stack"
+                }
+              />
             </FadeIn>
           </Container>
         )}

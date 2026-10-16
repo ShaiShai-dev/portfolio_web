@@ -3,6 +3,7 @@
 import Image from "next/image";
 import Link from "next/link";
 import { motion, useReducedMotion } from "framer-motion";
+import { formatProjectTimeline } from "@/lib/project-date";
 import type { Project } from "@/lib/supabase/types";
 
 export function ProjectCard({
@@ -14,6 +15,10 @@ export function ProjectCard({
 }) {
   const shouldReduceMotion = useReducedMotion();
   const projectNumber = String(index + 1).padStart(2, "0");
+  const projectTimeline = formatProjectTimeline(
+    project.development_start,
+    project.development_end,
+  );
 
   return (
     <motion.article
@@ -88,6 +93,12 @@ export function ProjectCard({
           <p className="mt-4 flex-1 text-sm leading-6 text-alabaster-grey/65">
             {project.summary}
           </p>
+
+          {projectTimeline && (
+            <p className="mt-5 border-l border-orange pl-3 font-mono text-[8px] uppercase leading-5 tracking-[0.15em] text-alabaster-grey/50">
+              Development / {projectTimeline}
+            </p>
+          )}
 
           {project.tech_stack.length > 0 && (
             <div className="mt-6 flex flex-wrap gap-2 border-t border-alabaster-grey/15 pt-4">

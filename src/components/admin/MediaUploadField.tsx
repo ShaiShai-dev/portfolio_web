@@ -18,7 +18,7 @@ export default function MediaUploadField({
   previewPosition = "center",
 }: {
   label: string;
-  folder: "home" | "about" | "projects" | "contact";
+  folder: "home" | "about" | "projects" | "contact" | "certificates";
   value: string | null;
   alt: string;
   onChange: (url: string | null) => void;

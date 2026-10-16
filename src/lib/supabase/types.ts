@@ -13,6 +13,9 @@ export type Project = {
   tech_stack: string[];
   thumbnail_url: string | null;
   screenshot_urls: string[];
+  gallery_style: "stack" | "floating";
+  development_start: string | null;
+  development_end: string | null;
   live_url: string | null;
   github_url: string | null;
   is_published: boolean;
@@ -47,11 +50,14 @@ export type ProfileSectionItem = {
   date: string;
   description: string;
   link: string;
+  image_url: string | null;
+  image_alt: string;
 };
 
 export type ProfileSection = {
   id: string;
   title: string;
+  display_style: "stack" | "floating";
   items: ProfileSectionItem[];
 };
 

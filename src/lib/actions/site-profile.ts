@@ -31,6 +31,15 @@ function requiredText(
   return text;
 }
 
+function optionalText(value: unknown, label: string, maximumLength: number) {
+  if (typeof value !== "string") return "";
+  const text = value.trim();
+  if (text.length > maximumLength) {
+    throw new Error(`${label} must be ${maximumLength} characters or fewer.`);
+  }
+  return text;
+}
+
 function sanitizeTechStack(value: unknown): TechStackItem[] {
   if (!Array.isArray(value) || value.length === 0) {
     throw new Error("Add at least one technology.");
@@ -110,6 +119,8 @@ function sanitizeCustomSections(value: unknown): ProfileSection[] {
     return {
       id: requiredText(section.id, `Section ${sectionIndex + 1} ID`, 100),
       title: requiredText(section.title, `Section ${sectionIndex + 1} title`, 120),
+      display_style:
+        section.display_style === "floating" ? "floating" : "stack",
       items: section.items.map((rawItem, itemIndex) => {
         if (!rawItem || typeof rawItem !== "object") {
           throw new Error(
@@ -118,10 +129,34 @@ function sanitizeCustomSections(value: unknown): ProfileSection[] {
         }
 
         const item = rawItem as Partial<ProfileSection["items"][number]>;
+        const title = requiredText(
+          item.title,
+          `Entry ${itemIndex + 1} title in section ${sectionIndex + 1}`,
+          160,
+        );
+        const date = optionalText(
+          item.date,
+          `Entry ${itemIndex + 1} date in section ${sectionIndex + 1}`,
+          7,
+        );
+        if (date && !/^\d{4}-(0[1-9]|1[0-2])$/.test(date)) {
+          throw new Error(
+            `Entry ${itemIndex + 1} date must include a valid month and year.`,
+          );
+        }
         const link = typeof item.link === "string" ? item.link.trim() : "";
         if (link && !/^https:\/\//i.test(link)) {
           throw new Error(
             `Entry ${itemIndex + 1} link must start with https://.`,
+          );
+        }
+        const imageUrl =
+          typeof item.image_url === "string" && item.image_url.trim()
+            ? item.image_url.trim()
+            : null;
+        if (imageUrl && !/^https:\/\//i.test(imageUrl)) {
+          throw new Error(
+            `Entry ${itemIndex + 1} image must be a secure uploaded image URL.`,
           );
         }
 
@@ -131,22 +166,22 @@ function sanitizeCustomSections(value: unknown): ProfileSection[] {
             `Entry ${itemIndex + 1} ID in section ${sectionIndex + 1}`,
             100,
           ),
-          title: requiredText(
-            item.title,
-            `Entry ${itemIndex + 1} title in section ${sectionIndex + 1}`,
-            160,
-          ),
-          date: requiredText(
-            item.date,
-            `Entry ${itemIndex + 1} date in section ${sectionIndex + 1}`,
-            100,
-          ),
+          title,
+          date,
           description: requiredText(
             item.description,
             `Entry ${itemIndex + 1} description in section ${sectionIndex + 1}`,
             1_200,
           ),
           link,
+          image_url: imageUrl,
+          image_alt: imageUrl
+            ? optionalText(
+                item.image_alt,
+                `Entry ${itemIndex + 1} image description in section ${sectionIndex + 1}`,
+                180,
+              ) || title
+            : "",
         };
       }),
     };

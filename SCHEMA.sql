@@ -21,12 +21,25 @@ create table public.projects (
 
   thumbnail_url text,                       -- gallery card image (Supabase storage)
   screenshot_urls text[] not null default '{}', -- additional case-study screenshots
+  gallery_style text not null default 'stack'
+    check (gallery_style in ('stack', 'floating')),
+
+  development_start date
+    check (development_start is null or extract(day from development_start) = 1),
+  development_end date
+    check (development_end is null or extract(day from development_end) = 1),
 
   live_url text,
   github_url text,
 
   is_published boolean not null default false, -- drafts stay hidden from public site
-  sort_order integer not null default 0         -- controls display order in the gallery
+  sort_order integer not null default 0,        -- controls display order in the gallery
+
+  constraint projects_development_dates_ordered check (
+    development_start is null
+    or development_end is null
+    or development_end >= development_start
+  )
 );
 
 -- Keep updated_at current on every row update.

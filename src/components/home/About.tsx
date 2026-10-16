@@ -3,6 +3,7 @@ import { BrandIcon } from "@/components/ui/BrandIcon";
 import { Container } from "@/components/ui/Container";
 import { FadeIn } from "@/components/ui/FadeIn";
 import { TechStackRoll } from "@/components/home/TechStackRoll";
+import { ProfileSectionGallery } from "@/components/home/ProfileSectionGallery";
 import { getResumeDownloadUrl } from "@/lib/resume";
 import { createClient } from "@/lib/supabase/server";
 import { getSiteProfileContent } from "@/lib/site-profile";
@@ -208,39 +209,7 @@ export async function About() {
                     </p>
                   </div>
 
-                  <div className="grid gap-3 sm:grid-cols-2">
-                    {section.items.map((item, itemIndex) => (
-                      <article
-                        key={item.id}
-                        className="group relative flex min-h-60 flex-col border border-alabaster-grey/20 bg-black/20 p-5 transition-colors hover:border-orange hover:bg-black/45"
-                      >
-                        <div className="flex items-start justify-between gap-4">
-                          <span className="font-mono text-[9px] uppercase tracking-[0.18em] text-orange">
-                            /{String(itemIndex + 1).padStart(2, "0")}
-                          </span>
-                          <time className="text-right font-mono text-[8px] uppercase tracking-[0.16em] text-alabaster-grey/45">
-                            {item.date}
-                          </time>
-                        </div>
-                        <h4 className="mt-8 text-2xl font-black leading-tight tracking-[-0.035em] text-white">
-                          {item.title}
-                        </h4>
-                        <p className="mt-4 flex-1 text-sm leading-6 text-alabaster-grey/65">
-                          {item.description}
-                        </p>
-                        {item.link && (
-                          <a
-                            href={item.link}
-                            target="_blank"
-                            rel="noopener noreferrer"
-                            className="mt-6 inline-flex items-center gap-3 border-t border-alabaster-grey/15 pt-4 font-mono text-[9px] font-bold uppercase tracking-[0.16em] text-orange transition-colors hover:text-white"
-                          >
-                            View credential <span aria-hidden>&nearr;</span>
-                          </a>
-                        )}
-                      </article>
-                    ))}
-                  </div>
+                  <ProfileSectionGallery section={section} />
                 </div>
               </FadeIn>
             ))}
