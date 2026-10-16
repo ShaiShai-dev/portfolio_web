@@ -316,17 +316,17 @@ export default function SiteEditorForm({
             </div>
 
             <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-3">
-              <ColorField label="Palette 01 / Foundation" value={settings.theme.black} onChange={(black) => updateTheme({ black })} />
-              <ColorField label="Palette 02 / Deep surface" value={settings.theme.prussian_blue} onChange={(prussian_blue) => updateTheme({ prussian_blue })} />
+              <ColorField label="Palette 01 / Dominant canvas" value={settings.theme.black} onChange={(black) => updateTheme({ black })} />
+              <ColorField label="Palette 02 / Raised surface" value={settings.theme.prussian_blue} onChange={(prussian_blue) => updateTheme({ prussian_blue })} />
               <ColorField label="Palette 03 / Signature" value={settings.theme.orange} onChange={(orange) => updateTheme({ orange })} />
               <ColorField label="Palette 04 / Support" value={settings.theme.alabaster_grey} onChange={(alabaster_grey) => updateTheme({ alabaster_grey })} />
               <ColorField label="Palette 05 / Light" value={settings.theme.white} onChange={(white) => updateTheme({ white })} />
             </div>
             <p className="border-l border-orange px-4 py-2 text-xs leading-5 text-alabaster-grey/65">
-              Every preset uses all five colors. The deepest tones form the
-              background and raised surfaces, the lightest readable tone carries
-              primary text, and the remaining colors power actions, borders,
-              grids, and animated details.
+              Every preset uses all five colors. Palette 01 is always the
+              dominant canvas, Palette 02 creates raised surfaces, and readable
+              palette colors are assigned to text and actions. The remaining
+              colors power borders, grids, and animated details.
             </p>
             <button
               type="button"

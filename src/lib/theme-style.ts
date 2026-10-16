@@ -48,13 +48,10 @@ export function resolveTheme(theme: ThemeSettings): ResolvedTheme {
     theme.alabaster_grey,
     theme.white,
   ];
-  const ordered = [...new Set(palette)].sort(
-    (first, second) => luminance(first) - luminance(second),
-  );
-  const background = ordered[0] ?? theme.black;
-  const surface = ordered[1] ?? background;
+  const background = theme.black;
+  const surface = theme.prussian_blue;
   const backgrounds = [background, surface];
-  const foreground = [...ordered].sort(
+  const foreground = [...new Set(palette)].sort(
     (first, second) =>
       minimumContrast(second, backgrounds) - minimumContrast(first, backgrounds),
   )[0] ?? theme.white;
