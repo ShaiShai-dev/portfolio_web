@@ -2,7 +2,6 @@
 
 import {
   useState,
-  type CSSProperties,
   type FormEvent,
   type ReactNode,
 } from "react";
@@ -14,6 +13,7 @@ import {
   THEME_PRESETS,
   themeMatchesPreset,
 } from "@/lib/site-settings";
+import { themeStyle } from "@/lib/theme-style";
 import type {
   ContactContent,
   HomeContent,
@@ -225,7 +225,7 @@ export default function SiteEditorForm({
           <EditorModule
             number="00"
             title="Global color system"
-            description="Choose one of three complete palettes. Every public section, field, border, button, background, and text treatment follows the selected system."
+            description="Choose one of three complete palettes. Smart contrast assigns readable backgrounds, surfaces, text, and accents across both the viewer and admin workspace."
           >
             <fieldset>
               <legend className={labelClassName}>Portfolio theme presets</legend>
@@ -290,8 +290,8 @@ export default function SiteEditorForm({
             </fieldset>
 
             <div
-              className="grid min-h-44 gap-4 border border-alabaster-grey/15 p-5 sm:grid-cols-[1fr_auto] sm:items-end"
-              style={themePreviewStyle(settings.theme)}
+              className="grid min-h-44 gap-4 border border-alabaster-grey/15 bg-black p-5 sm:grid-cols-[1fr_auto] sm:items-end"
+              style={themeStyle(settings.theme)}
             >
               <div>
                 <p className="font-mono text-[9px] uppercase tracking-[0.2em] text-[var(--orange)]">
@@ -316,12 +316,18 @@ export default function SiteEditorForm({
             </div>
 
             <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-3">
-              <ColorField label="Main background" value={settings.theme.black} onChange={(black) => updateTheme({ black })} />
-              <ColorField label="Section background" value={settings.theme.prussian_blue} onChange={(prussian_blue) => updateTheme({ prussian_blue })} />
-              <ColorField label="Accent" value={settings.theme.orange} onChange={(orange) => updateTheme({ orange })} />
-              <ColorField label="Muted text" value={settings.theme.alabaster_grey} onChange={(alabaster_grey) => updateTheme({ alabaster_grey })} />
-              <ColorField label="Primary text" value={settings.theme.white} onChange={(white) => updateTheme({ white })} />
+              <ColorField label="Palette 01 / Foundation" value={settings.theme.black} onChange={(black) => updateTheme({ black })} />
+              <ColorField label="Palette 02 / Deep surface" value={settings.theme.prussian_blue} onChange={(prussian_blue) => updateTheme({ prussian_blue })} />
+              <ColorField label="Palette 03 / Signature" value={settings.theme.orange} onChange={(orange) => updateTheme({ orange })} />
+              <ColorField label="Palette 04 / Support" value={settings.theme.alabaster_grey} onChange={(alabaster_grey) => updateTheme({ alabaster_grey })} />
+              <ColorField label="Palette 05 / Light" value={settings.theme.white} onChange={(white) => updateTheme({ white })} />
             </div>
+            <p className="border-l border-orange px-4 py-2 text-xs leading-5 text-alabaster-grey/65">
+              Colors are automatically assigned by contrast. In Molten Lava,
+              deep-space blue becomes the base, molten lava becomes the raised
+              surface, papaya whip carries readable text and actions, while
+              brick red and steel blue remain visible in graphic details.
+            </p>
             <button
               type="button"
               onClick={() => setSettings((current) => ({ ...current, theme: { ...DEFAULT_THEME } }))}
@@ -427,7 +433,6 @@ export default function SiteEditorForm({
     </form>
   );
 }
-
 function EditorModule({ number, title, description, children }: { number: string; title: string; description: string; children: ReactNode }) {
   return (
     <section className="border border-alabaster-grey/15 bg-prussian-blue/35">
@@ -484,15 +489,4 @@ function ColorField({ label, value, onChange }: { label: string; value: string; 
       </span>
     </label>
   );
-}
-
-function themePreviewStyle(theme: ThemeSettings) {
-  return {
-    "--black": theme.black,
-    "--prussian-blue": theme.prussian_blue,
-    "--orange": theme.orange,
-    "--alabaster-grey": theme.alabaster_grey,
-    "--white": theme.white,
-    backgroundColor: theme.black,
-  } as CSSProperties;
 }

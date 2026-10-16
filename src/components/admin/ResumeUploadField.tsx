@@ -25,6 +25,17 @@ function documentName(url: string) {
   }
 }
 
+function uploadErrorMessage(error: unknown) {
+  const message =
+    error instanceof Error ? error.message : "The resume could not be uploaded.";
+
+  if (/mime type .* is not supported/i.test(message)) {
+    return "PDF uploads are not enabled in Supabase Storage yet. Run the latest Supabase migration for this portfolio, then try again.";
+  }
+
+  return message;
+}
+
 export default function ResumeUploadField({
   value,
   onChange,
@@ -75,11 +86,7 @@ export default function ResumeUploadField({
       setUploadedName(file.name);
       onChange(publicUrl);
     } catch (uploadError) {
-      setError(
-        uploadError instanceof Error
-          ? uploadError.message
-          : "The resume could not be uploaded.",
-      );
+      setError(uploadErrorMessage(uploadError));
     } finally {
       setUploading(false);
       if (inputRef.current) inputRef.current.value = "";

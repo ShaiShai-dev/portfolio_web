@@ -6,6 +6,8 @@
   --orange: #fca311;
   --alabaster-grey: #e5e5e5;
   --white: #ffffff;
+  --theme-detail: #fca311;
+  --theme-detail-secondary: #e5e5e5;
 
   --background: var(--black);
   --foreground: var(--white);
@@ -52,15 +54,15 @@ body {
 
 .surface-grid {
   background-image:
-    linear-gradient(to right, color-mix(in srgb, var(--alabaster-grey) 6%, transparent) 1px, transparent 1px),
-    linear-gradient(to bottom, color-mix(in srgb, var(--alabaster-grey) 6%, transparent) 1px, transparent 1px);
+    linear-gradient(to right, color-mix(in srgb, var(--theme-detail-secondary) 10%, transparent) 1px, transparent 1px),
+    linear-gradient(to bottom, color-mix(in srgb, var(--theme-detail) 10%, transparent) 1px, transparent 1px);
   background-size: 48px 48px;
 }
 
 .fine-grid {
   background-image:
-    linear-gradient(to right, color-mix(in srgb, var(--alabaster-grey) 8%, transparent) 1px, transparent 1px),
-    linear-gradient(to bottom, color-mix(in srgb, var(--alabaster-grey) 8%, transparent) 1px, transparent 1px);
+    linear-gradient(to right, color-mix(in srgb, var(--theme-detail-secondary) 12%, transparent) 1px, transparent 1px),
+    linear-gradient(to bottom, color-mix(in srgb, var(--theme-detail) 12%, transparent) 1px, transparent 1px);
   background-size: 24px 24px;
 }
 
@@ -163,7 +165,7 @@ body {
 ::-webkit-scrollbar-thumb {
   border: 3px solid var(--black);
   border-radius: 999px;
-  background: var(--prussian-blue);
+  background: var(--theme-detail-secondary);
 }
 
 ::-webkit-scrollbar-thumb:hover {
