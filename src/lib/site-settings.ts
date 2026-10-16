@@ -17,7 +17,12 @@ export const DEFAULT_THEME: ThemeSettings = {
 };
 
 export type ThemePreset = {
-  id: "signature" | "molten-lava" | "ink-black";
+  id:
+    | "signature"
+    | "molten-lava"
+    | "ink-black"
+    | "onyx-frost"
+    | "bordeaux-stone";
   name: string;
   description: string;
   colors: ThemeSettings;
@@ -57,6 +62,32 @@ export const THEME_PRESETS: ThemePreset[] = [
       white: "#f0ebd8ff",
     },
     labels: ["Ink black", "Deep space blue", "Dusty denim", "Blue slate", "Eggshell"],
+  },
+  {
+    id: "onyx-frost",
+    name: "Onyx & Frost",
+    description: "A crisp dark-teal system with platinum type and icy blue energy.",
+    colors: {
+      black: "#0a090cff",
+      prussian_blue: "#07393cff",
+      orange: "#90ddf0ff",
+      alabaster_grey: "#2c666eff",
+      white: "#f0edeeff",
+    },
+    labels: ["Onyx", "Dark teal", "Frosted blue", "Stormy teal", "Platinum"],
+  },
+  {
+    id: "bordeaux-stone",
+    name: "Bordeaux & Stone",
+    description: "A warm, refined system pairing deep wine surfaces with tactile neutrals.",
+    colors: {
+      black: "#0a0908ff",
+      prussian_blue: "#49111cff",
+      orange: "#a9927dff",
+      alabaster_grey: "#5e503fff",
+      white: "#f2f4f3ff",
+    },
+    labels: ["Black", "Night bordeaux", "Dusty taupe", "Stone brown", "White smoke"],
   },
 ];
 

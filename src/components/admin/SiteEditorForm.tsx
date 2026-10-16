@@ -225,11 +225,11 @@ export default function SiteEditorForm({
           <EditorModule
             number="00"
             title="Global color system"
-            description="Choose one of three complete palettes. Smart contrast assigns readable backgrounds, surfaces, text, and accents across both the viewer and admin workspace."
+            description="Choose one of five complete palettes. Smart contrast assigns readable backgrounds, surfaces, text, and accents across both the viewer and admin workspace."
           >
             <fieldset>
               <legend className={labelClassName}>Portfolio theme presets</legend>
-              <div className="mt-3 grid gap-3 md:grid-cols-3">
+              <div className="mt-3 grid gap-3 md:grid-cols-2 xl:grid-cols-5">
                 {THEME_PRESETS.map((preset) => {
                   const selected = themeMatchesPreset(settings.theme, preset);
 
@@ -323,10 +323,10 @@ export default function SiteEditorForm({
               <ColorField label="Palette 05 / Light" value={settings.theme.white} onChange={(white) => updateTheme({ white })} />
             </div>
             <p className="border-l border-orange px-4 py-2 text-xs leading-5 text-alabaster-grey/65">
-              Colors are automatically assigned by contrast. In Molten Lava,
-              deep-space blue becomes the base, molten lava becomes the raised
-              surface, papaya whip carries readable text and actions, while
-              brick red and steel blue remain visible in graphic details.
+              Every preset uses all five colors. The deepest tones form the
+              background and raised surfaces, the lightest readable tone carries
+              primary text, and the remaining colors power actions, borders,
+              grids, and animated details.
             </p>
             <button
               type="button"
