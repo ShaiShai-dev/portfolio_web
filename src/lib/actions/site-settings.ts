@@ -50,9 +50,9 @@ function list(value: unknown, label: string, maxItems: number) {
 
 function theme(value: ThemeSettings): ThemeSettings {
   const color = (candidate: unknown, label: string) => {
-    const result = text(candidate, label, 7).toLowerCase();
-    if (!/^#[0-9a-f]{6}$/.test(result)) {
-      throw new Error(`${label} must use a six-digit hex color.`);
+    const result = text(candidate, label, 9).toLowerCase();
+    if (!/^#[0-9a-f]{6}([0-9a-f]{2})?$/.test(result)) {
+      throw new Error(`${label} must use a six- or eight-digit hex color.`);
     }
     return result;
   };

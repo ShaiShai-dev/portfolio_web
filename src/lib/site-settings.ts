@@ -16,6 +16,59 @@ export const DEFAULT_THEME: ThemeSettings = {
   white: "#ffffff",
 };
 
+export type ThemePreset = {
+  id: "signature" | "molten-lava" | "ink-black";
+  name: string;
+  description: string;
+  colors: ThemeSettings;
+  labels: [string, string, string, string, string];
+};
+
+export const THEME_PRESETS: ThemePreset[] = [
+  {
+    id: "signature",
+    name: "SHAI Signature",
+    description: "The original black, Prussian blue, and orange portfolio system.",
+    colors: DEFAULT_THEME,
+    labels: ["Black", "Prussian blue", "Orange", "Alabaster grey", "White"],
+  },
+  {
+    id: "molten-lava",
+    name: "Molten Lava",
+    description: "A bold editorial system balancing warm reds with deep blue.",
+    colors: {
+      black: "#780000ff",
+      prussian_blue: "#003049ff",
+      orange: "#c1121fff",
+      alabaster_grey: "#669bbcff",
+      white: "#fdf0d5ff",
+    },
+    labels: ["Molten lava", "Deep space blue", "Brick red", "Steel blue", "Papaya whip"],
+  },
+  {
+    id: "ink-black",
+    name: "Ink & Denim",
+    description: "A calm navy system with blue-slate details and eggshell type.",
+    colors: {
+      black: "#0d1321ff",
+      prussian_blue: "#1d2d44ff",
+      orange: "#748cabff",
+      alabaster_grey: "#3e5c76ff",
+      white: "#f0ebd8ff",
+    },
+    labels: ["Ink black", "Deep space blue", "Dusty denim", "Blue slate", "Eggshell"],
+  },
+];
+
+export function themeMatchesPreset(
+  theme: ThemeSettings,
+  preset: ThemePreset,
+) {
+  return (Object.keys(preset.colors) as Array<keyof ThemeSettings>).every(
+    (key) => theme[key].toLowerCase() === preset.colors[key].toLowerCase(),
+  );
+}
+
 export const DEFAULT_MAINTENANCE_CONTENT: MaintenanceContent = {
   eyebrow: "Scheduled maintenance",
   heading: "The portfolio is getting a quick tune-up.",

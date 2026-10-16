@@ -9,7 +9,11 @@ import {
 import { useRouter } from "next/navigation";
 import MediaUploadField from "@/components/admin/MediaUploadField";
 import { saveSiteSettings } from "@/lib/actions/site-settings";
-import { DEFAULT_THEME } from "@/lib/site-settings";
+import {
+  DEFAULT_THEME,
+  THEME_PRESETS,
+  themeMatchesPreset,
+} from "@/lib/site-settings";
 import type {
   ContactContent,
   HomeContent,
@@ -221,8 +225,70 @@ export default function SiteEditorForm({
           <EditorModule
             number="00"
             title="Global color system"
-            description="These five variables drive every public section, component, border, button, and text treatment."
+            description="Choose one of three complete palettes. Every public section, field, border, button, background, and text treatment follows the selected system."
           >
+            <fieldset>
+              <legend className={labelClassName}>Portfolio theme presets</legend>
+              <div className="mt-3 grid gap-3 md:grid-cols-3">
+                {THEME_PRESETS.map((preset) => {
+                  const selected = themeMatchesPreset(settings.theme, preset);
+
+                  return (
+                    <label
+                      key={preset.id}
+                      className={`group cursor-pointer border p-4 transition-all ${
+                        selected
+                          ? "border-orange bg-orange/10 shadow-[inset_0_0_0_1px_var(--orange)]"
+                          : "border-alabaster-grey/15 bg-black/45 hover:border-alabaster-grey/40"
+                      }`}
+                    >
+                      <input
+                        type="radio"
+                        name="theme-preset"
+                        value={preset.id}
+                        checked={selected}
+                        onChange={() => updateTheme({ ...preset.colors })}
+                        className="sr-only"
+                      />
+                      <span className="flex items-start justify-between gap-3">
+                        <span>
+                          <span className="block text-sm font-bold text-white">
+                            {preset.name}
+                          </span>
+                          <span className="mt-1 block text-xs leading-5 text-alabaster-grey/50">
+                            {preset.description}
+                          </span>
+                        </span>
+                        <span
+                          aria-hidden
+                          className={`mt-0.5 grid size-5 shrink-0 place-items-center rounded-full border ${
+                            selected
+                              ? "border-orange bg-orange text-black"
+                              : "border-alabaster-grey/30"
+                          }`}
+                        >
+                          {selected ? "✓" : ""}
+                        </span>
+                      </span>
+                      <span className="mt-4 grid grid-cols-5 overflow-hidden border border-alabaster-grey/15">
+                        {Object.entries(preset.colors).map(([key, color], index) => (
+                          <span
+                            key={key}
+                            className="h-9"
+                            style={{ backgroundColor: color }}
+                            title={`${preset.labels[index]}: ${color}`}
+                          />
+                        ))}
+                      </span>
+                      <span className="mt-3 block font-mono text-[7px] uppercase leading-4 tracking-[0.12em] text-alabaster-grey/45">
+                        {preset.labels.join(" / ")}
+                      </span>
+                    </label>
+                  );
+                })}
+              </div>
+            </fieldset>
+
             <div
               className="grid min-h-44 gap-4 border border-alabaster-grey/15 p-5 sm:grid-cols-[1fr_auto] sm:items-end"
               style={themePreviewStyle(settings.theme)}
@@ -239,9 +305,9 @@ export default function SiteEditorForm({
                 </p>
               </div>
               <div className="flex gap-2">
-                {Object.values(settings.theme).map((color) => (
+                {Object.entries(settings.theme).map(([key, color]) => (
                   <span
-                    key={color}
+                    key={key}
                     className="size-8 border border-[var(--alabaster-grey)]/20"
                     style={{ backgroundColor: color }}
                   />
@@ -413,8 +479,8 @@ function ColorField({ label, value, onChange }: { label: string; value: string; 
     <label className="flex flex-col gap-1.5">
       <span className={labelClassName}>{label}</span>
       <span className="flex border border-alabaster-grey/15 bg-black p-1 focus-within:border-orange">
-        <input type="color" value={value} onChange={(event) => onChange(event.target.value)} className="h-9 w-11 cursor-pointer border-0 bg-transparent" />
-        <input required pattern="#[0-9A-Fa-f]{6}" value={value} onChange={(event) => onChange(event.target.value)} className="min-w-0 flex-1 bg-transparent px-2 font-mono text-xs uppercase text-white outline-none" />
+        <input type="color" value={value.slice(0, 7)} onChange={(event) => onChange(event.target.value)} className="h-9 w-11 cursor-pointer border-0 bg-transparent" />
+        <input required pattern="#[0-9A-Fa-f]{6}([0-9A-Fa-f]{2})?" value={value} onChange={(event) => onChange(event.target.value)} className="min-w-0 flex-1 bg-transparent px-2 font-mono text-xs uppercase text-white outline-none" />
       </span>
     </label>
   );

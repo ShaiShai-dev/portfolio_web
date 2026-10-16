@@ -1,3 +1,4 @@
+import Link from "next/link";
 import { notFound } from "next/navigation";
 import ProjectForm from "@/components/admin/ProjectForm";
 import { createClient } from "@/lib/supabase/server";
@@ -20,12 +21,39 @@ export default async function EditProjectPage({
   }
 
   return (
-    <main className="flex-1 px-6 py-16">
-      <div className="mx-auto max-w-3xl">
-        <h1 className="text-2xl font-bold text-white">
-          Edit Project — {project.title}
-        </h1>
-        <div className="mt-8">
+    <main className="relative flex-1 overflow-hidden px-5 py-12 sm:px-6 sm:py-16">
+      <div
+        aria-hidden
+        className="surface-grid pointer-events-none absolute inset-0 opacity-25"
+      />
+      <div
+        aria-hidden
+        className="pointer-events-none absolute -right-40 top-0 size-[520px] rounded-full border border-orange/15"
+      />
+      <div className="relative mx-auto max-w-6xl">
+        <Link
+          href="/admin/projects"
+          className="inline-flex items-center gap-3 font-mono text-[9px] uppercase tracking-[0.16em] text-alabaster-grey/50 transition-colors hover:text-orange"
+        >
+          <span aria-hidden>&larr;</span> Project archive
+        </Link>
+
+        <div className="mt-7 border-t border-alabaster-grey/20 pt-6 sm:flex sm:items-end sm:justify-between">
+          <div>
+            <p className="font-mono text-[9px] uppercase tracking-[0.2em] text-orange">
+              Project workspace / Editing
+            </p>
+            <h1 className="mt-2 max-w-3xl text-4xl font-black tracking-[-0.05em] text-white sm:text-5xl">
+              {project.title}<span className="text-orange">.</span>
+            </h1>
+          </div>
+          <p className="mt-4 max-w-sm text-sm leading-6 text-alabaster-grey/50 sm:mt-0">
+            Refine the story, manage its visual gallery, and publish when the
+            case study is ready.
+          </p>
+        </div>
+
+        <div className="mt-10">
           <ProjectForm project={project} />
         </div>
       </div>
