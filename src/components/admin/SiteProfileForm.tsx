@@ -4,6 +4,7 @@ import { useState, type FormEvent, type ReactNode } from "react";
 import { useRouter } from "next/navigation";
 import { BrandIcon } from "@/components/ui/BrandIcon";
 import MediaUploadField from "@/components/admin/MediaUploadField";
+import ResumeUploadField from "@/components/admin/ResumeUploadField";
 import {
   SOCIAL_PLATFORM_OPTIONS,
   TECH_ICON_OPTIONS,
@@ -301,10 +302,17 @@ export default function SiteProfileForm({
       <EditorSection
         index="03"
         title="Resume preview"
-        description="Control the public resume card, preview link, and download shown on the About section."
+        description="Upload a new PDF and control the public preview and download shown on the About section."
       >
+        <ResumeUploadField
+          value={profile.resume_url}
+          onChange={(resume_url) =>
+            setProfile((current) => ({ ...current, resume_url }))
+          }
+        />
+
         <div className="grid gap-5 sm:grid-cols-2">
-          <Field label="Button label" htmlFor="resume_label">
+          <Field label="Resume button label" htmlFor="resume_label">
             <input
               id="resume_label"
               required
@@ -315,7 +323,10 @@ export default function SiteProfileForm({
               className={inputClassName}
             />
           </Field>
-          <Field label="PDF URL or public path" htmlFor="resume_url">
+          <details className="group border border-alabaster-grey/15 bg-black/30 p-4">
+            <summary className="cursor-pointer font-mono text-[9px] uppercase tracking-[0.16em] text-alabaster-grey/60 transition-colors hover:text-orange">
+              Advanced: document URL
+            </summary>
             <input
               id="resume_url"
               required
@@ -323,10 +334,11 @@ export default function SiteProfileForm({
               onChange={(event) =>
                 updateTextField("resume_url", event.target.value)
               }
+              aria-label="Resume PDF URL or public path"
               placeholder="/documents/your-resume.pdf"
-              className={inputClassName}
+              className={`${inputClassName} mt-3`}
             />
-          </Field>
+          </details>
         </div>
         <Field label="Resume summary" htmlFor="resume_summary">
           <textarea
@@ -340,19 +352,6 @@ export default function SiteProfileForm({
             className={inputClassName}
           />
         </Field>
-        <div className="flex flex-wrap items-center gap-3 border border-alabaster-grey/15 bg-black/40 p-4">
-          <span className="font-mono text-[9px] uppercase tracking-[0.16em] text-alabaster-grey/50">
-            Current document
-          </span>
-          <a
-            href={profile.resume_url}
-            target="_blank"
-            rel="noopener noreferrer"
-            className="font-mono text-[10px] uppercase tracking-[0.14em] text-orange underline-offset-4 hover:underline"
-          >
-            Open PDF ↗
-          </a>
-        </div>
       </EditorSection>
 
       <EditorSection

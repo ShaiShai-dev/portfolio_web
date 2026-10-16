@@ -3,6 +3,7 @@ import { BrandIcon } from "@/components/ui/BrandIcon";
 import { Container } from "@/components/ui/Container";
 import { FadeIn } from "@/components/ui/FadeIn";
 import { TechStackRoll } from "@/components/home/TechStackRoll";
+import { getResumeDownloadUrl } from "@/lib/resume";
 import { createClient } from "@/lib/supabase/server";
 import { getSiteProfileContent } from "@/lib/site-profile";
 
@@ -162,7 +163,7 @@ export async function About() {
                   <span aria-hidden>&nearr;</span>
                 </a>
                 <a
-                  href={profile.resume_url}
+                  href={getResumeDownloadUrl(profile.resume_url)}
                   download
                   className="flex items-center justify-between border border-black px-5 py-4 font-mono text-[10px] font-black uppercase tracking-[0.16em] transition-colors hover:bg-black hover:text-white"
                 >

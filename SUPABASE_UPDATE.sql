@@ -263,7 +263,7 @@ grant select, insert, update on table public.site_settings to authenticated;
 -- ---------------------------------------------------------------------------
 -- Public image buckets
 -- project-images: project thumbnails and case-study screenshots
--- site-media: Home, About, Projects, and Contact section images
+-- site-media: Home, About, Projects, and Contact media plus the public resume
 -- ---------------------------------------------------------------------------
 insert into storage.buckets (
   id, name, public, file_size_limit, allowed_mime_types
@@ -288,7 +288,7 @@ values (
   'site-media',
   true,
   5242880,
-  array['image/jpeg', 'image/png', 'image/webp', 'image/gif']
+  array['image/jpeg', 'image/png', 'image/webp', 'image/gif', 'application/pdf']
 )
 on conflict (id) do update
 set public = excluded.public,
