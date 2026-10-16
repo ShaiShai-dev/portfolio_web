@@ -423,7 +423,113 @@ export default function SiteEditorForm({
         )}
 
         {active === "projects" && (
-          <EditorModule number="02" title="Projects presentation" description="Edit section copy and its optional header image. Individual case studies remain in Manage Projects.">
+          <EditorModule number="02" title="Projects presentation" description="Choose how the complete project collection is showcased, then edit its copy and optional header image. Individual case studies remain in Manage Projects.">
+            <fieldset>
+              <legend className={labelClassName}>Whole-section showcase layout</legend>
+              <p className="mt-2 max-w-2xl text-xs leading-5 text-alabaster-grey/50">
+                This controls every published project together on the homepage and project archive.
+              </p>
+              <div className="mt-4 grid gap-3 md:grid-cols-3">
+                {(
+                  [
+                    {
+                      value: "grid",
+                      label: "Gallery grid",
+                      description: "A complete card wall with project details visible at once.",
+                    },
+                    {
+                      value: "stack",
+                      label: "Stack showcase",
+                      description: "An interactive layered deck with one featured project.",
+                    },
+                    {
+                      value: "floating",
+                      label: "Floating gallery",
+                      description: "A wider animated project reel with independent motion.",
+                    },
+                  ] as const
+                ).map((option) => {
+                  const selected =
+                    settings.projects_content.display_style === option.value;
+
+                  return (
+                    <label
+                      key={option.value}
+                      className={`group cursor-pointer border p-4 transition-all ${
+                        selected
+                          ? "border-orange bg-orange/10 shadow-[inset_0_0_0_1px_var(--orange)]"
+                          : "border-alabaster-grey/15 bg-black/45 hover:border-alabaster-grey/40"
+                      }`}
+                    >
+                      <input
+                        type="radio"
+                        name="projects-display-style"
+                        value={option.value}
+                        checked={selected}
+                        onChange={() =>
+                          updateProjects({ display_style: option.value })
+                        }
+                        className="sr-only"
+                      />
+                      <span className="flex items-start justify-between gap-3">
+                        <span>
+                          <span className="block text-sm font-black text-white">
+                            {option.label}
+                          </span>
+                          <span className="mt-1 block text-xs leading-5 text-alabaster-grey/50">
+                            {option.description}
+                          </span>
+                        </span>
+                        <span
+                          aria-hidden
+                          className={`grid size-7 shrink-0 place-items-center rounded-full border font-mono text-[9px] ${
+                            selected
+                              ? "border-orange bg-orange text-black"
+                              : "border-alabaster-grey/25 text-alabaster-grey/35"
+                          }`}
+                        >
+                          {selected ? "✓" : "○"}
+                        </span>
+                      </span>
+                      <span className="relative mt-4 block h-20 overflow-hidden border border-alabaster-grey/10 bg-prussian-blue/50">
+                        {[0, 1, 2].map((previewIndex) => {
+                          const offset = previewIndex - 1;
+                          const isGrid = option.value === "grid";
+                          const isStack = option.value === "stack";
+
+                          return (
+                            <span
+                              key={previewIndex}
+                              className="absolute top-1/2 h-11 border border-orange/45 bg-black/85"
+                              style={{
+                                left: isGrid
+                                  ? `${18 + previewIndex * 27}%`
+                                  : "50%",
+                                width: isGrid ? "23%" : "42%",
+                                transform: isGrid
+                                  ? "translate(-50%, -50%)"
+                                  : `translate(calc(-50% + ${
+                                      offset * (isStack ? 22 : 38)
+                                    }px), calc(-50% + ${
+                                      option.value === "floating"
+                                        ? offset % 2 === 0
+                                          ? -6
+                                          : 7
+                                        : Math.abs(offset) * 5
+                                    }px)) rotate(${
+                                      offset * (isStack ? -5 : 2)
+                                    }deg)`,
+                                zIndex: previewIndex === 1 ? 3 : 2,
+                              }}
+                            />
+                          );
+                        })}
+                      </span>
+                    </label>
+                  );
+                })}
+              </div>
+            </fieldset>
             <div className="grid gap-5 sm:grid-cols-2">
               <TextField label="Section label" value={settings.projects_content.eyebrow} onChange={(eyebrow) => updateProjects({ eyebrow })} />
               <TextField label="Homepage heading" value={settings.projects_content.heading} onChange={(heading) => updateProjects({ heading })} />

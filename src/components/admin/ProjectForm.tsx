@@ -362,22 +362,25 @@ export default function ProjectForm({ project }: { project?: Project }) {
           number="03"
           icon={<MediaIcon />}
           title="Project media"
-          description="Upload a gallery cover and supporting interface screenshots, then choose how the gallery moves."
+          description="Upload a cover and supporting interface screenshots, then choose how this project's detail gallery moves. The whole collection layout is controlled separately in Site Editor → Projects."
         >
           <fieldset>
-            <legend className={labelClassName}>Screenshot gallery animation</legend>
+            <legend className={labelClassName}>Individual screenshot gallery</legend>
+            <p className="mt-2 max-w-2xl text-xs leading-5 text-alabaster-grey/45">
+              This setting only changes the screenshot gallery inside this project&apos;s case-study page.
+            </p>
             <div className="mt-3 grid gap-3 sm:grid-cols-2">
               {(
                 [
                   {
                     value: "stack",
                     label: "Stack view",
-                    description: "Overlapping frames with the selected image in front.",
+                    description: "Overlapping screenshots with the selected frame in front.",
                   },
                   {
                     value: "floating",
                     label: "Floating gallery",
-                    description: "Airier frames with gentle independent movement.",
+                    description: "Airier screenshots with gentle independent movement.",
                   },
                 ] as const
               ).map((option) => {

@@ -109,6 +109,7 @@ export type HomeContent = {
 };
 
 export type ProjectsContent = {
+  display_style: "grid" | "stack" | "floating";
   eyebrow: string;
   heading: string;
   introduction: string;

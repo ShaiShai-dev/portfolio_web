@@ -3,7 +3,7 @@ import Link from "next/link";
 import { createClient } from "@/lib/supabase/server";
 import { Container } from "@/components/ui/Container";
 import { FadeIn } from "@/components/ui/FadeIn";
-import { ProjectCard } from "@/components/home/ProjectCard";
+import { ProjectsShowcase } from "@/components/home/ProjectsShowcase";
 import type { ProjectsContent } from "@/lib/supabase/types";
 
 export async function ProjectsGallery({
@@ -82,11 +82,10 @@ export async function ProjectsGallery({
       )}
 
       {projects && projects.length > 0 ? (
-        <div className="mt-14 grid grid-cols-1 items-stretch gap-5 sm:mt-20 sm:grid-cols-2 xl:grid-cols-3">
-          {projects.map((project, index) => (
-            <ProjectCard key={project.id} project={project} index={index} />
-          ))}
-        </div>
+        <ProjectsShowcase
+          projects={projects}
+          displayStyle={content.display_style}
+        />
       ) : (
         <FadeIn delay={0.1}>
           <div className="fine-grid mt-14 grid min-h-80 place-items-center border border-dashed border-alabaster-grey/25 bg-prussian-blue/25 px-5 text-center sm:mt-20">

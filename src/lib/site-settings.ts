@@ -137,6 +137,7 @@ export const DEFAULT_HOME_CONTENT: HomeContent = {
 };
 
 export const DEFAULT_PROJECTS_CONTENT: ProjectsContent = {
+  display_style: "grid",
   eyebrow: "Featured projects",
   heading: "Selected work",
   introduction:
@@ -209,6 +210,11 @@ function mergeStrings<T extends object>(defaults: T, value: unknown): T {
 export function getSiteSettingsContent(
   settings: SiteSettings | null | undefined,
 ): SiteSettingsContent {
+  const projectsContent = mergeStrings(
+    DEFAULT_PROJECTS_CONTENT,
+    settings?.projects_content,
+  );
+
   return {
     maintenance_mode: settings?.maintenance_mode === true,
     maintenance_content: mergeStrings(
@@ -217,10 +223,14 @@ export function getSiteSettingsContent(
     ),
     theme: mergeStrings(DEFAULT_THEME, settings?.theme),
     home_content: mergeStrings(DEFAULT_HOME_CONTENT, settings?.home_content),
-    projects_content: mergeStrings(
-      DEFAULT_PROJECTS_CONTENT,
-      settings?.projects_content,
-    ),
+    projects_content: {
+      ...projectsContent,
+      display_style:
+        projectsContent.display_style === "stack" ||
+        projectsContent.display_style === "floating"
+          ? projectsContent.display_style
+          : "grid",
+    },
     contact_content: mergeStrings(
       DEFAULT_CONTACT_CONTENT,
       settings?.contact_content,

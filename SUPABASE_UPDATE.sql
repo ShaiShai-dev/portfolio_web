@@ -207,6 +207,17 @@ alter table public.site_settings
     "status_label": "Temporarily offline"
   }'::jsonb;
 
+-- The layout applies to the complete published project collection.
+-- Existing portfolios keep their current grid until the admin changes it.
+update public.site_settings
+set projects_content = jsonb_set(
+  coalesce(projects_content, '{}'::jsonb),
+  '{display_style}',
+  coalesce(projects_content -> 'display_style', '"grid"'::jsonb),
+  true
+)
+where id = 'main';
+
 do $$
 begin
   if not exists (

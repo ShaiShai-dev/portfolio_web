@@ -114,6 +114,11 @@ function home(value: HomeContent): HomeContent {
 
 function projects(value: ProjectsContent): ProjectsContent {
   return {
+    display_style: choice(value.display_style, "Projects showcase layout", [
+      "grid",
+      "stack",
+      "floating",
+    ]),
     eyebrow: text(value.eyebrow, "Projects eyebrow", 100),
     heading: text(value.heading, "Projects heading", 120),
     introduction: text(value.introduction, "Projects introduction", 500),
